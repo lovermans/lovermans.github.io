@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta
+        content="Tes Satuan Ukuran Berbasis Web yang dikembangkan oleh Hebbie Ilma Adzim, S. ST didedikasikan untuk PT. Kepuh Kencana Arum"
+        name="description">
+    <link rel="shortcut icon" type="image/x-icon" href="favicon.ico">
+    <title>Satuan Ukuran</title>
+    <style>
+        :root {
+            --primary-color: #4a90e2;
+            --secondary-color: #f5a623;
+            --bg-color: #f4f7f6;
+            --text-color: #333;
+            --card-bg: #ffffff;
+            --danger-color: #ee5253;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: system-ui, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            padding: 1.25rem;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        .passkey-container {
+            background: var(--card-bg);
+            max-width: 25rem;
+            width: 100%;
+            border-radius: 0.75rem;
+            box-shadow: 0 0.25rem 0.9375rem rgba(0, 0, 0, 0.1);
+            padding: 2.1875rem 1.875rem;
+            text-align: center;
+        }
+
+        .passkey-input {
+            width: 100%;
+            padding: 0.75rem;
+            margin: 1.25rem 0 0.625rem 0;
+            border: 0.125rem solid #e9ecef;
+            border-radius: 0.5rem;
+            font-size: 1rem;
+            text-align: center;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .passkey-input:focus {
+            border-color: var(--primary-color);
+        }
+
+        .passkey-btn {
+            width: 100%;
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 0.75rem;
+            font-size: 1rem;
+            font-weight: bold;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .passkey-btn:hover {
+            background: #357abd;
+        }
+
+        .error-msg {
+            color: var(--danger-color);
+            font-size: 0.875rem;
+            margin-top: 0.75rem;
+            display: none;
+            font-weight: 500;
+        }
+
+        .loading-msg {
+            color: var(--primary-color);
+            font-size: 0.875rem;
+            margin-top: 0.75rem;
+            display: none;
+        }
+
+        .quiz-container {
+            background: var(--card-bg);
+            max-width: 43.75rem;
+            width: 100%;
+            border-radius: 0.75rem;
+            box-shadow: 0 0.25rem 0.9375rem rgba(0, 0, 0, 0.1);
+            padding: 1.875rem;
+            position: relative;
+            display: none;
+        }
+
+        /* PEMBARUAN: Header dibuat melayang (Sticky) saat di-scroll */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 0.125rem solid #eee;
+            padding-bottom: 0.9375rem;
+            margin-bottom: 1.25rem;
+
+            /* Logika Sticky */
+            position: sticky;
+            top: 0;
+            /* Menempel di batas paling atas browser */
+            background: var(--card-bg);
+            /* Menutupi soal di bawahnya saat berpapasan */
+            z-index: 100;
+            /* Memastikan posisi selalu di layer paling depan */
+            margin-top: -0.625rem;
+            /* Penyesuaian jarak kompensasi padding container */
+            padding-top: 0.625rem;
+        }
+
+        h1 {
+            font-size: 1.5rem;
+            color: var(--primary-color);
+        }
+
+        #timer {
+            font-size: 1.125rem;
+            font-weight: bold;
+            background: #ffdde1;
+            color: var(--danger-color);
+            padding: 0.5rem 0.9375rem;
+            border-radius: 1.25rem;
+            border: 0.0625rem solid #ffb8b8;
+            white-space: nowrap;
+            /* Mencegah teks timer terlipat di layar kecil */
+        }
+
+        #quiz-form ol {
+            padding-inline-start: 1rem;
+        }
+
+        .question-card {
+            margin-bottom: 1.5625rem;
+            padding-bottom: 1.25rem;
+            border-bottom: 0.0625rem solid #eff2f5;
+
+            &::marker {
+                font-weight: 600;
+            }
+        }
+
+        .question-text {
+            font-weight: 600;
+            margin-bottom: 1.25rem;
+        }
+
+        .question-text>p {
+            margin: 0 0 0.5rem;
+        }
+
+        .options-container {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 0.625rem;
+        }
+
+        .option-label {
+            display: flex;
+            align-items: center;
+            padding: 0.75rem 0.9375rem;
+            background: #f8f9fa;
+            border: 0.125rem solid #e9ecef;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .option-label:hover {
+            background: #eef2f7;
+            border-color: var(--primary-color);
+        }
+
+        .option-label input {
+            margin-right: 0.75rem;
+            transform: scale(1.2);
+        }
+
+        input[type="radio"]:checked+span {
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+
+        .submit-btn {
+            display: block;
+            width: 100%;
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 0.9375rem;
+            font-size: 1.125rem;
+            font-weight: bold;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            transition: background 0.2s;
+            margin-top: 1.25rem;
+        }
+
+        .submit-btn:hover {
+            background: #357abd;
+        }
+
+        #result {
+            text-align: center;
+            padding: 1.875rem;
+        }
+
+        .result-score {
+            font-size: 3.5rem;
+            font-weight: bold;
+            color: var(--secondary-color);
+            margin: 0.9375rem 0;
+        }
+
+        .result-details {
+            font-size: 1rem;
+            margin-bottom: 1.5625rem;
+            line-height: 1.6;
+        }
+
+        .restart-btn {
+            background: #6c757d;
+            color: white;
+            padding: 0.75rem 1.875rem;
+            border: none;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: bold;
+            transition: background 0.2s;
+            width: 100%;
+            max-width: 250px;
+            margin: 10px auto;
+        }
+
+        .restart-btn:hover {
+            background: #5a6268;
+        }
+
+        .form-group {
+            margin-bottom: 0.9375rem;
+            text-align: left;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.3125rem;
+            font-weight: 600;
+            font-size: 0.875rem;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 0.625rem 0.75rem;
+            border: 0.125rem solid #e9ecef;
+            border-radius: 0.375rem;
+            font-size: 0.9375rem;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .form-control:focus {
+            border-color: var(--primary-color);
+        }
+
+        footer {
+            text-align: center;
+            line-height: calc(1em + 0.5rem);
+            padding: 1rem 0 0;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="passkey-container" id="passkey-box">
+        <h2>Verifikasi Akses</h2>
+        <p style="font-size: 0.875rem; color: #666; margin-top: 0.3125rem;">Silakan masukkan passkey untuk membuka tes
+        </p>
+        <input type="password" id="passkey-input" class="passkey-input" placeholder="Masukkan Passkey...">
+        <button class="passkey-btn" onclick="verifyPasskey()">Mulai Tes</button>
+        <div id="loading-msg" class="loading-msg">Memverifikasi passkey...</div>
+        <div id="error-msg" class="error-msg">Passkey salah! Silakan coba lagi.</div>
+    </div>
+
+    <div class="quiz-container" id="quiz-box">
+        <header>
+            <h1>Satuan Ukuran</h1>
+            <div id="timer">07:00</div>
+        </header>
+
+        <form id="quiz-form">
+            <div id="questions-container"></div>
+            <button type="button" class="submit-btn" onclick="submitQuiz(false)">Selesai</button>
+        </form>
+    </div>
+
+    <div class="quiz-container" id="result">
+        <h2>Skor</h2>
+        <div class="result-score" id="score-display">0</div>
+        <div class="result-details" id="details-display"></div>
+
+        <!-- <div style="margin-bottom: 1.5625rem;">
+            <button class="restart-btn" onclick="window.location.reload()">Ulangi Tes Langsung</button>
+        </div> -->
+
+        <div id="input-data-box" style="border-top: 0.125rem solid #eee; padding-top: 1.5625rem;">
+            <h3 style="margin-bottom: 0.9375rem; color: var(--primary-color); text-align: left;">Kirim Hasil Tes (Harap
+                Sesuai Instruksi Petugas)</h3>
+
+            <div class="form-group">
+                <label>Nama Lengkap</label>
+                <input type="text" id="input-nama" class="form-control" placeholder="Contoh: Joko Widodo">
+            </div>
+
+            <div class="form-group">
+                <label>No Whatsapp</label>
+                <input type="tel" id="input-hp" class="form-control" placeholder="Contoh: 62XXXXXXXXXXX">
+            </div>
+
+            <div class="form-group">
+                <label>Posisi yang Dilamar</label>
+                <input type="text" id="input-posisi" class="form-control" placeholder="Contoh: Direktur Operasional">
+            </div>
+
+            <div class="form-group">
+                <label>Nama Instruktur Ujian</label>
+                <input type="text" id="input-petugas" class="form-control" placeholder="Contoh: Ani Wijaya">
+            </div>
+
+            <button class="submit-btn" style="margin-top: 0.625rem;" onclick="sendDataToSheet()">Kirim Hasil
+                Tes</button>
+            <div id="send-loading-msg" class="loading-msg" style="text-align:center; margin-top:0.75rem;">Sedang
+                mengirim data...</div>
+            <div id="send-success-msg"
+                style="color: #2ecc71; text-align:center; margin-top:0.75rem; display:none; font-weight:bold;">Data
+                Berhasil Dikirim</div>
+            <div id="send-error-msg" class="error-msg" style="text-align:center; margin-top:0.75rem;">Gagal mengirim
+                data.
+                Periksa koneksi internet dan coba lagi.</div>
+        </div>
+    </div>
+
+    <footer>
+        <p>Dikembangkan oleh <a href="https://github.com/lovermans" rel="noopener" target="_blank">Lovermans</a>
+            didedikasikan untuk <a href="https://kepuhkencanaarum.com" rel="noopener" target="_blank">PT. Kepuh Kencana
+                Arum</a></p>
+    </footer>
+
+    <script>
+        function _0x5ead(){const _0x1112cc=['fBsTV','fVcrC','sheets/d/1','passkey-in','nsZGt','kAknf','container','h\x20sejauh\x201','\x20\x20\x20\x20\x20','a?</p>','innerHTML','50.000\x20cm','gSVOP','812\x20m','\x20\x20\x20\x20\x20\x20\x20<st','1.500\x20m','njWhZ','ng-msg','\x20lain\x20sepa','\x20\x20\x20\x20\x20<labe','\x20m</p>','...\x20cm</p>','textConten','wBcUw','Passkey\x20sa','os/s/AKfyc','14,5\x20cm','g\x20ditempuh','strong>\x20','\x20\x20</label>','djJrA','145\x20mm','\x20dari\x20','rjalan\x20dar','hTCUY','1096ZzlBbS','1,45\x20m','2\x20km.\x20Jika','FRYQv','Mygng','gerjaan:</','ezpGI','ubjCf','questions-','skor','<p>Andi\x20be','xjRLt','bw0ALeryms','.</strong>','iki\x20panjan','ezifl','div','qOAuc','tongkat\x20me','\x20data\x20form','-yMftohxCe','\x20dalam\x20met','appendChil','\x20sebuah\x20me','ZfNsR','lam\x20meter?','owRjF','loading-ms','xlUyz','com/spread','ebut?</p>','splay','Passkey\x20ti','.\x20Berapa\x20m','ger-color)','g\x203.500\x20cm','DpjAm','ded','1,5\x20m','send-succe','error','ulir\x20terle','jaYek','ap\x20tinggi\x20','\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20','\x22]:checked','1.750\x20m\x20=\x20','\x20ke\x20dalam\x20','CTjWr','kosong!','\x20meter.\x20Be','\x22\x20name=\x22qu','GgltD','17.500\x20cm','PllFe','Satuan\x20Uku','abis!\x20Kuis','input[name','lah!\x20Akses','>\x0a\x20\x20\x20\x20\x20\x20\x20\x20','panjang\x202,','ai818MLUW7','none','eter\x20panja','split','35\x20m','\x22\x20value=\x22','ongan\x20pert','\x20panjang\x20m','2,15\x20m','njang\x20120\x20','\x20dihentika','\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20','1.500m','kuXqI','\x20Andi\x20dala','h\x20Dinda\x20da','ya\x20adalah\x20','Nquxo','ak\x20tersebu','nf6yWkUbEd','ript.googl','ent','n\x20sekolahn','Ou2GIXA0Nw',';\x27>Waktu\x20H','YTmmw','BljRH',',2\x20km.\x20Set','UjEWI','YsaxD','clnzf','2\x20mm\x20=\x20...','ja\x20adalah\x20','append','input-posi','BrKqa','GkUNY','\x20memiliki\x20','no-cors','quiz-box','5.000\x20cm','\x20jarak\x20yan','ReFrK','ZQtKx','kGFuB','ntara\x20ruma','https://sc','uWCEPX0/ex','ari\x205,2\x20m\x20','14,5\x20m','ption-labe','\x20menit\x20','QEsL8Ug4bl','i\x20dua\x20bagi','4.250\x20mm','block','error-msg','i\x20rumahnya','ambah\x20deng',':var(--dan','\x20soal.<br>','sejauh\x20800','150\x20cm.\x20Be','toString','lanan\x20ke\x20r','qISGr','5,272\x20m','fikasi.\x20Pe','tiang\x20bend','CKhWi','NDs/gviz/t','input-hp','-box','<p>Panjang','BzoEF','5,632\x20m','VNncZ','</span>\x0a\x20\x20','kCIGm','rclUt','riksa\x20kone','jang\x2095\x20cm','1881837phqEuK','5\x20meter.\x20J','l\x20class=\x22o','175.000\x20cm','ype=\x22radio','ongan\x20kedu','+\x204\x20cm\x20+\x203','cs.google.','GxNIx','cm,\x20berapa','POST','gas','ki\x20tinggi\x20','ut?</p>','random','umah\x20Joko\x20','aEuiJ','1,75\x20cm','.\x20Jika\x20dit','ytElS','AOIKS','input-nama','Papan\x20ters','l\x22>\x0a\x20\x20\x20\x20\x20\x20','n/x-www-fo','an_lli1WaJ','papan\x20kayu','ext','options-co','0,215\x20m','LkLWx','era\x20memili','iPgdy','ebut\x20dipot','er,\x20berapa','Gagal\x20veri','ong\x20menjad','rong>Total','kxRvN','<p>Jarak\x20a','gWyAx','...\x20mm</p>','djljK','passkey-bo','text','\x22\x20required','Guksf','-msg','ng\x20kain\x20te','https://do','m\x20meter?</','350\x20m','8.120\x20m','timer','anjang\x20pot','ard','18403FBSbrH','=\x22question','floor','nLuvQ','17,5\x20cm','kain\x20memil','<p>Total\x20d','956GPPYaY','round','scrollTo','ia\x20melanju','an\x20tongkat','frMkV','/strong>\x20','imlwD','kapi\x20semua','bxsPQ','ById','ONgPq','rm-urlenco','Gagal\x20terh','tiang\x20ters','put','n\x20otomatis','\x20\x20\x20\x20\x20\x20\x20','<span>','score-disp','6i0O75L6hw','ran','WnbNl','length','\x20ditolak.','rong>Jawab','42,5\x20mm','t?</p>','ubung','150\x20m','200\x20m','<p>Sebuah\x20','UhFGQ','input-data','</p>','425\x20mm','e.com/macr','rapa\x20meter','sentimeter','eja\x20terseb','<p>Tinggi\x20','lay','result','LjZjO','RaYgh','pxCYh','3,5\x20m','question','an.\x20Jika\x20p','6509340kTYlZn','BWyuA','\x20\x20<input\x20t','bih\x20dahulu','estion','details-di','display','dSnGj','options','20.000\x20m','ss-msg',',\x20berapa\x20p','style','aPidr','trim','215\x20m','4548004BTxsKE','dak\x20boleh\x20','920\x20m','ama\x20adalah','UJa0LJu9_K','input-petu','\x20meter\x20jar','replace','querySelec','petugas','nivPO','question-t','13523949tCLPXy','RuTjg','\x20detik.\x0a\x20\x20','et.','\x201,3\x20meter','value','\x20diubah\x20ke','\x20(cm),\x20ber','tor','r>\x0a\x20\x20\x20\x20\x20\x20\x20','\x20panjang\x20t','question-c','5,2432\x20m','1122636JUkmON','<br><br>','Mohon\x20leng','QRpLKVth6j','vEBeb','\x20Waktu\x20Pen','posisi','500\x20cm','className','nama_tes','ksi\x20intern','q?tqx=out:','miliki\x20pan','send-loadi','applicatio','correct','ntainer','OgkiK','rapa\x20total','\x20\x20\x20\x20<br><b','elah\x20itu,\x20','50\x20cm','0,35\x20m','otalnya\x20da','tyEWB','send-error','tkan\x20perja','an\x20Benar:<','rsebut?</p','aKsKQ','getElement','2.000\x20m','42.500\x20mm','yvngx','75\x20meter.\x20','<strong\x20st','createElem','\x204,25\x20m\x20=\x20','csv','\x20ke\x20sekola','15\x20m','hjfKT','5,92\x20m','ika\x20diubah','5PxLfRw','yle=\x27color','forEach','21,5\x20m','nama','1436lWFxYJ'];_0x5ead=function(){return _0x1112cc;};return _0x5ead();}const _0x5b2784=_0x5d4a;(function(_0x28aa13,_0xa7cb1e){const _0x494967=_0x5d4a,_0x4fcfa5=_0x28aa13();while(!![]){try{const _0x1e2fbe=parseInt(_0x494967(0x276))/(-0x1*-0xdb7+0x1cb8+0x1*-0x2a6e)*(-parseInt(_0x494967(0x301))/(0x116c+-0x20cc*0x1+0xf62))+parseInt(_0x494967(0x237))/(0x6b9*0x4+-0x16ba+-0x427)+-parseInt(_0x494967(0x2b7))/(-0x10d8+0xa62+0x67a)+parseInt(_0x494967(0x2fc))/(-0x2226+-0x1ce9+0x3f14)*(parseInt(_0x494967(0x2d0))/(-0x10c3+0x62d+0xc2*0xe))+parseInt(_0x494967(0x26f))/(-0x100c+-0x933+0x1946)*(-parseInt(_0x494967(0x1a8))/(0x115a+0x1b70+-0x2cc2))+parseInt(_0x494967(0x2c3))/(-0x6b0*-0x4+0x2de*0xa+-0x3763)+parseInt(_0x494967(0x2a7))/(-0x1*-0x25cd+0x212e+0x46f1*-0x1);if(_0x1e2fbe===_0xa7cb1e)break;else _0x4fcfa5['push'](_0x4fcfa5['shift']());}catch(_0x890e7e){_0x4fcfa5['push'](_0x4fcfa5['shift']());}}}(_0x5ead,0x1*0x3247+0x321f9+0x8a3ce));const quizData=[{'question':_0x5b2784(0x22e)+_0x5b2784(0x1bf)+_0x5b2784(0x205)+_0x5b2784(0x223)+_0x5b2784(0x29b)+_0x5b2784(0x1ec)+_0x5b2784(0x29d)+_0x5b2784(0x244),'options':[_0x5b2784(0x1ce),_0x5b2784(0x2f8),_0x5b2784(0x293),_0x5b2784(0x1f1)],'correct':_0x5b2784(0x1ce)},{'question':_0x5b2784(0x25e)+_0x5b2784(0x212)+_0x5b2784(0x1f4)+_0x5b2784(0x1fb)+_0x5b2784(0x1f5)+_0x5b2784(0x1aa)+_0x5b2784(0x2c9)+_0x5b2784(0x1bd)+_0x5b2784(0x259)+_0x5b2784(0x2bd)+_0x5b2784(0x1f7)+_0x5b2784(0x291),'options':[_0x5b2784(0x294),_0x5b2784(0x2ef),_0x5b2784(0x2b0),_0x5b2784(0x311)],'correct':_0x5b2784(0x2ef)},{'question':_0x5b2784(0x295)+_0x5b2784(0x229)+_0x5b2784(0x256)+_0x5b2784(0x243)+_0x5b2784(0x238)+_0x5b2784(0x2fb)+_0x5b2784(0x1d7)+_0x5b2784(0x29c)+_0x5b2784(0x2ca)+_0x5b2784(0x1d3)+_0x5b2784(0x284)+_0x5b2784(0x1c6),'options':[_0x5b2784(0x2e5),_0x5b2784(0x2d7),_0x5b2784(0x20d),_0x5b2784(0x30d)],'correct':_0x5b2784(0x2d7)},{'question':_0x5b2784(0x22e)+_0x5b2784(0x2f5)+_0x5b2784(0x260),'options':[_0x5b2784(0x299),_0x5b2784(0x21b),_0x5b2784(0x2f0),_0x5b2784(0x290)],'correct':_0x5b2784(0x21b)},{'question':_0x5b2784(0x29e)+_0x5b2784(0x1d6)+_0x5b2784(0x317),'options':[_0x5b2784(0x1dd),_0x5b2784(0x23a),_0x5b2784(0x248),_0x5b2784(0x273)],'correct':_0x5b2784(0x23a)},{'question':_0x5b2784(0x275)+_0x5b2784(0x215)+_0x5b2784(0x23d)+_0x5b2784(0x204)+_0x5b2784(0x316),'options':[_0x5b2784(0x2fa),_0x5b2784(0x230),_0x5b2784(0x227),_0x5b2784(0x2cf)],'correct':_0x5b2784(0x227)},{'question':_0x5b2784(0x295)+_0x5b2784(0x274)+_0x5b2784(0x1b6)+_0x5b2784(0x1cb)+_0x5b2784(0x1c9)+_0x5b2784(0x1e7)+_0x5b2784(0x267)+_0x5b2784(0x2ec)+'>','options':[_0x5b2784(0x2a4),_0x5b2784(0x1e9),_0x5b2784(0x26a),_0x5b2784(0x2e6)],'correct':_0x5b2784(0x1e9)},{'question':_0x5b2784(0x1b2)+_0x5b2784(0x323)+_0x5b2784(0x21e)+_0x5b2784(0x2f7)+_0x5b2784(0x309)+_0x5b2784(0x200)+_0x5b2784(0x2e4)+_0x5b2784(0x279)+_0x5b2784(0x2ea)+_0x5b2784(0x225)+_0x5b2784(0x246)+_0x5b2784(0x222)+_0x5b2784(0x1da)+_0x5b2784(0x2e2)+_0x5b2784(0x20e)+_0x5b2784(0x31d)+_0x5b2784(0x1f3)+_0x5b2784(0x269)+'p>','options':[_0x5b2784(0x2ef),_0x5b2784(0x26b),_0x5b2784(0x2b9),_0x5b2784(0x30f)],'correct':_0x5b2784(0x2ef)},{'question':_0x5b2784(0x295)+_0x5b2784(0x251)+_0x5b2784(0x20a)+_0x5b2784(0x1e4)+_0x5b2784(0x2f2)+_0x5b2784(0x24d)+_0x5b2784(0x258)+_0x5b2784(0x25b)+_0x5b2784(0x21a)+_0x5b2784(0x2a6)+_0x5b2784(0x26d)+_0x5b2784(0x1eb)+_0x5b2784(0x2ba)+_0x5b2784(0x2c7)+_0x5b2784(0x2b2)+_0x5b2784(0x26d)+_0x5b2784(0x23c)+_0x5b2784(0x30b),'options':[_0x5b2784(0x1a9),_0x5b2784(0x216),_0x5b2784(0x31c),_0x5b2784(0x321)],'correct':_0x5b2784(0x1a9)},{'question':_0x5b2784(0x295)+_0x5b2784(0x1ba)+_0x5b2784(0x2dc)+_0x5b2784(0x236)+_0x5b2784(0x249)+_0x5b2784(0x21f)+_0x5b2784(0x27a)+_0x5b2784(0x314)+_0x5b2784(0x1ee)+_0x5b2784(0x240)+_0x5b2784(0x2cd)+_0x5b2784(0x2e7)+_0x5b2784(0x1c1)+_0x5b2784(0x298),'options':[_0x5b2784(0x2b6),_0x5b2784(0x2ff),_0x5b2784(0x1ed),_0x5b2784(0x254)],'correct':_0x5b2784(0x1ed)}];function _0x5d4a(_0x3e0124,_0x1a1d34){_0x3e0124=_0x3e0124-(0x1b73*0x1+-0x11e1+0x7eb*-0x1);const _0x568d65=_0x5ead();let _0x2c47d6=_0x568d65[_0x3e0124];return _0x2c47d6;}let timerInterval,timeLeft=-0xd60+0x15c*-0xb+0x1df8,finalScoreString='';const sheetCsvUrl=_0x5b2784(0x268)+_0x5b2784(0x23e)+_0x5b2784(0x1c5)+_0x5b2784(0x304)+_0x5b2784(0x2d3)+_0x5b2784(0x28a)+_0x5b2784(0x219)+_0x5b2784(0x250)+_0x5b2784(0x22b)+_0x5b2784(0x2db)+_0x5b2784(0x2f6),appsScriptUrl=_0x5b2784(0x213)+_0x5b2784(0x1f9)+_0x5b2784(0x29a)+_0x5b2784(0x31b)+_0x5b2784(0x1b4)+_0x5b2784(0x1e5)+_0x5b2784(0x1f8)+_0x5b2784(0x1bc)+_0x5b2784(0x2bb)+_0x5b2784(0x1fc)+_0x5b2784(0x214)+'ec';async function verifyPasskey(){const _0x5ce96f=_0x5b2784,_0x1158e0={'CKhWi':_0x5ce96f(0x305)+_0x5ce96f(0x285),'PllFe':_0x5ce96f(0x21d),'yvngx':_0x5ce96f(0x1c3)+'g','hjfKT':_0x5ce96f(0x1c8)+_0x5ce96f(0x2b8)+_0x5ce96f(0x1d9),'BzoEF':_0x5ce96f(0x21c),'ZQtKx':_0x5ce96f(0x1e6),'fBsTV':function(_0x2bb1b4,_0x53189f){return _0x2bb1b4(_0x53189f);},'DpjAm':_0x5ce96f(0x283)+_0x5ce96f(0x292),'djljK':function(_0x4f055c,_0x36ffc5){return _0x4f055c===_0x36ffc5;},'owRjF':function(_0x3a124a){return _0x3a124a();},'hTCUY':_0x5ce96f(0x31a)+_0x5ce96f(0x1e2)+_0x5ce96f(0x28e),'ytElS':_0x5ce96f(0x25a)+_0x5ce96f(0x228)+_0x5ce96f(0x235)+_0x5ce96f(0x2da)+_0x5ce96f(0x2c6)},_0x488a55=document[_0x5ce96f(0x2ee)+_0x5ce96f(0x280)](_0x1158e0[_0x5ce96f(0x22a)])[_0x5ce96f(0x2c8)][_0x5ce96f(0x2b5)](),_0x4b15c3=document[_0x5ce96f(0x2ee)+_0x5ce96f(0x280)](_0x1158e0[_0x5ce96f(0x1de)]),_0x11040b=document[_0x5ce96f(0x2ee)+_0x5ce96f(0x280)](_0x1158e0[_0x5ce96f(0x2f1)]);if(!_0x488a55)return _0x4b15c3[_0x5ce96f(0x318)+'t']=_0x1158e0[_0x5ce96f(0x2f9)],void(_0x4b15c3[_0x5ce96f(0x2b3)][_0x5ce96f(0x2ad)]=_0x1158e0[_0x5ce96f(0x22f)]);_0x4b15c3[_0x5ce96f(0x2b3)][_0x5ce96f(0x2ad)]=_0x1158e0[_0x5ce96f(0x210)],_0x11040b[_0x5ce96f(0x2b3)][_0x5ce96f(0x2ad)]=_0x1158e0[_0x5ce96f(0x22f)];try{const _0x342a4e=await _0x1158e0[_0x5ce96f(0x302)](fetch,sheetCsvUrl);if(!_0x342a4e['ok'])throw new Error(_0x1158e0[_0x5ce96f(0x1cc)]);const _0x2bc112=(await _0x342a4e[_0x5ce96f(0x263)]())[_0x5ce96f(0x1e8)]('\x0a')[0x1379*0x1+-0xb47*-0x3+0x1aa7*-0x2][_0x5ce96f(0x1e8)](',')[-0x9*-0x397+0x7*-0x56b+0x59e][_0x5ce96f(0x2be)](/^"|"$/g,'')[_0x5ce96f(0x2b5)]();_0x11040b[_0x5ce96f(0x2b3)][_0x5ce96f(0x2ad)]=_0x1158e0[_0x5ce96f(0x210)],_0x1158e0[_0x5ce96f(0x261)](_0x488a55,_0x2bc112)?_0x1158e0[_0x5ce96f(0x1c2)](loadQuiz):(_0x4b15c3[_0x5ce96f(0x318)+'t']=_0x1158e0[_0x5ce96f(0x1a7)],_0x4b15c3[_0x5ce96f(0x2b3)][_0x5ce96f(0x2ad)]=_0x1158e0[_0x5ce96f(0x22f)]);}catch(_0x2aa274){_0x11040b[_0x5ce96f(0x2b3)][_0x5ce96f(0x2ad)]=_0x1158e0[_0x5ce96f(0x210)],_0x4b15c3[_0x5ce96f(0x30c)]=_0x1158e0[_0x5ce96f(0x24a)],_0x4b15c3[_0x5ce96f(0x2b3)][_0x5ce96f(0x2ad)]=_0x1158e0[_0x5ce96f(0x22f)];}}function shuffleArray(_0x3b7a41){const _0x786a14=_0x5b2784,_0x2a49f6={'ubjCf':function(_0x96f5d7,_0x2f470b){return _0x96f5d7-_0x2f470b;},'gSVOP':function(_0x5392b8,_0x421465){return _0x5392b8>_0x421465;},'wBcUw':function(_0x4b500a,_0x5050be){return _0x4b500a*_0x5050be;},'Guksf':function(_0x594036,_0x4b230d){return _0x594036+_0x4b230d;}};for(let _0x1b195b=_0x2a49f6[_0x786a14(0x1af)](_0x3b7a41[_0x786a14(0x28d)],0x19d6*0x1+0x1*0x178a+-0x3*0x1075);_0x2a49f6[_0x786a14(0x30e)](_0x1b195b,-0x11f4+-0x106+0x12fa);_0x1b195b--){const _0x5dc426=Math[_0x786a14(0x271)](_0x2a49f6[_0x786a14(0x319)](Math[_0x786a14(0x245)](),_0x2a49f6[_0x786a14(0x265)](_0x1b195b,-0x8c7*-0x1+-0xab0+-0x7*-0x46)));[_0x3b7a41[_0x1b195b],_0x3b7a41[_0x5dc426]]=[_0x3b7a41[_0x5dc426],_0x3b7a41[_0x1b195b]];}return _0x3b7a41;}function loadQuiz(){const _0x5a8c0e=_0x5b2784,_0x5216fb={'aPidr':function(_0x3d3131,_0x4030cd){return _0x3d3131(_0x4030cd);},'kAknf':_0x5a8c0e(0x2ce)+_0x5a8c0e(0x26e),'VNncZ':_0x5a8c0e(0x1b8),'RaYgh':_0x5a8c0e(0x2c2)+_0x5a8c0e(0x252),'aEuiJ':_0x5a8c0e(0x253)+_0x5a8c0e(0x2e0),'pxCYh':_0x5a8c0e(0x262)+'x','UhFGQ':_0x5a8c0e(0x1e6),'AOIKS':_0x5a8c0e(0x20c),'fVcrC':_0x5a8c0e(0x21c),'clnzf':_0x5a8c0e(0x1b0)+_0x5a8c0e(0x308),'imlwD':function(_0x49df29){return _0x49df29();}};document[_0x5a8c0e(0x2ee)+_0x5a8c0e(0x280)](_0x5216fb[_0x5a8c0e(0x2a3)])[_0x5a8c0e(0x2b3)][_0x5a8c0e(0x2ad)]=_0x5216fb[_0x5a8c0e(0x296)],document[_0x5a8c0e(0x2ee)+_0x5a8c0e(0x280)](_0x5216fb[_0x5a8c0e(0x24b)])[_0x5a8c0e(0x2b3)][_0x5a8c0e(0x2ad)]=_0x5216fb[_0x5a8c0e(0x303)];const _0x3ef279=document[_0x5a8c0e(0x2ee)+_0x5a8c0e(0x280)](_0x5216fb[_0x5a8c0e(0x203)]);_0x3ef279[_0x5a8c0e(0x30c)]='';const _0x2545d6=document[_0x5a8c0e(0x2f4)+_0x5a8c0e(0x1fa)]('ol');_0x3ef279[_0x5a8c0e(0x1be)+'d'](_0x2545d6),quizData[_0x5a8c0e(0x2fe)]((_0x3c4c37,_0x412178)=>{const _0xc121d=_0x5a8c0e,_0x1e8ee8=_0x5216fb[_0xc121d(0x2b4)](shuffleArray,[..._0x3c4c37[_0xc121d(0x2af)]]),_0x5d0b4d=document[_0xc121d(0x2f4)+_0xc121d(0x1fa)]('li');_0x5d0b4d[_0xc121d(0x2d8)]=_0x5216fb[_0xc121d(0x307)];let _0x28598e='';_0x1e8ee8[_0xc121d(0x2fe)](_0x4a846c=>{const _0x295a5f=_0xc121d;_0x28598e+=_0x295a5f(0x1f0)+_0x295a5f(0x1d4)+_0x295a5f(0x315)+_0x295a5f(0x239)+_0x295a5f(0x217)+_0x295a5f(0x24e)+_0x295a5f(0x1d4)+_0x295a5f(0x1d4)+_0x295a5f(0x2a9)+_0x295a5f(0x23b)+_0x295a5f(0x1db)+_0x295a5f(0x2ab)+_0x412178+_0x295a5f(0x1ea)+_0x4a846c+(_0x295a5f(0x264)+_0x295a5f(0x1e3)+_0x295a5f(0x1d4)+_0x295a5f(0x1d4)+_0x295a5f(0x288))+_0x4a846c+(_0x295a5f(0x232)+_0x295a5f(0x1d4)+_0x295a5f(0x1d4)+_0x295a5f(0x31f)+_0x295a5f(0x1f0)+_0x295a5f(0x1d4)+'\x20');});const _0x27adbd=document[_0xc121d(0x2f4)+_0xc121d(0x1fa)](_0x5216fb[_0xc121d(0x231)]);_0x27adbd[_0xc121d(0x2d8)]=_0x5216fb[_0xc121d(0x2a2)],_0x27adbd[_0xc121d(0x30c)]=_0x3c4c37[_0xc121d(0x2a5)],_0x5d0b4d[_0xc121d(0x1be)+'d'](_0x27adbd);const _0x668110=document[_0xc121d(0x2f4)+_0xc121d(0x1fa)](_0x5216fb[_0xc121d(0x231)]);_0x668110[_0xc121d(0x2d8)]=_0x5216fb[_0xc121d(0x247)],_0x668110[_0xc121d(0x30c)]=_0x28598e,_0x5d0b4d[_0xc121d(0x1be)+'d'](_0x668110),_0x2545d6[_0xc121d(0x1be)+'d'](_0x5d0b4d);}),_0x5216fb[_0x5a8c0e(0x27d)](startTimer);}function startTimer(){const _0x28fd75=_0x5b2784,_0x8835d1={'kCIGm':function(_0x727ef7,_0x47e4c6){return _0x727ef7/_0x47e4c6;},'frMkV':function(_0x589f5c,_0x2ca429){return _0x589f5c%_0x2ca429;},'ZfNsR':function(_0x43b348,_0x3804e6){return _0x43b348<_0x3804e6;},'Nquxo':function(_0x25f11b,_0x2e7a2e){return _0x25f11b+_0x2e7a2e;},'ezpGI':function(_0x45785a,_0x1839f3){return _0x45785a<=_0x1839f3;},'xjRLt':function(_0x3d50d5,_0x446281){return _0x3d50d5(_0x446281);},'GxNIx':function(_0x1d3faf,_0x4d2323){return _0x1d3faf(_0x4d2323);},'kuXqI':_0x28fd75(0x26c),'iPgdy':function(_0x49e7d0,_0x48574c,_0x543b59){return _0x49e7d0(_0x48574c,_0x543b59);}},_0x3b3ef8=document[_0x28fd75(0x2ee)+_0x28fd75(0x280)](_0x8835d1[_0x28fd75(0x1f2)]);timerInterval=_0x8835d1[_0x28fd75(0x257)](setInterval,()=>{const _0x504bf1=_0x28fd75;let _0x33b1d7=Math[_0x504bf1(0x271)](_0x8835d1[_0x504bf1(0x233)](timeLeft,0x68*-0xa+-0x1b*0xb3+0x172d)),_0x2ecf10=_0x8835d1[_0x504bf1(0x27b)](timeLeft,-0x60*-0x5d+0x4*-0x97+0x4*-0x812);_0x33b1d7=_0x8835d1[_0x504bf1(0x1c0)](_0x33b1d7,0x124*0x1f+-0x4de*0x3+-0x14b8)?_0x8835d1[_0x504bf1(0x1f6)]('0',_0x33b1d7):_0x33b1d7,_0x2ecf10=_0x8835d1[_0x504bf1(0x1c0)](_0x2ecf10,-0xf7a+0x23a3+-0x12f*0x11)?_0x8835d1[_0x504bf1(0x1f6)]('0',_0x2ecf10):_0x2ecf10,_0x3b3ef8[_0x504bf1(0x318)+'t']=_0x33b1d7+':'+_0x2ecf10,_0x8835d1[_0x504bf1(0x1ae)](timeLeft,-0x259*0x1+-0x1*0x1190+0x13e9)&&(_0x8835d1[_0x504bf1(0x1b3)](clearInterval,timerInterval),_0x8835d1[_0x504bf1(0x23f)](submitQuiz,!(-0xf*-0x121+0xf21+-0x4*0x804))),timeLeft--;},-0x17d*0xa+0x1edb+0x1*-0xc11);}function submitQuiz(_0x3a15a8){const _0x271948=_0x5b2784,_0x3622fb={'kxRvN':function(_0x5443a4,_0x26450c){return _0x5443a4===_0x26450c;},'YTmmw':function(_0x568476,_0x40d3a8){return _0x568476(_0x40d3a8);},'qOAuc':function(_0x1a86a7,_0x5e734a){return _0x1a86a7*_0x5e734a;},'djJrA':function(_0x5966a2,_0x44ac1d){return _0x5966a2/_0x44ac1d;},'qISGr':function(_0x597acd,_0x3d9843){return _0x597acd-_0x3d9843;},'rclUt':function(_0x42fbb1,_0xc4752a){return _0x42fbb1/_0xc4752a;},'ezifl':function(_0x4d4879,_0x128485){return _0x4d4879%_0x128485;},'ONgPq':_0x271948(0x20c),'dSnGj':_0x271948(0x1e6),'BrKqa':_0x271948(0x2a0),'kGFuB':_0x271948(0x21c),'FRYQv':_0x271948(0x289)+_0x271948(0x29f),'xlUyz':_0x271948(0x2f3)+_0x271948(0x2fd)+_0x271948(0x220)+_0x271948(0x1ca)+_0x271948(0x1fd)+_0x271948(0x1e0)+_0x271948(0x1ef)+_0x271948(0x286)+_0x271948(0x1b5)+_0x271948(0x2d1),'ReFrK':_0x271948(0x2ac)+_0x271948(0x1c7)};_0x3622fb[_0x271948(0x1fe)](clearInterval,timerInterval);let _0x2a4d78=0x5*0x17f+0x15e4+-0x1d5f;const _0x13a02e=quizData[_0x271948(0x28d)];quizData[_0x271948(0x2fe)]((_0x1a7202,_0x2502e8)=>{const _0x1fac6f=_0x271948,_0x409601=document[_0x1fac6f(0x2bf)+_0x1fac6f(0x2cb)](_0x1fac6f(0x1e1)+_0x1fac6f(0x270)+_0x2502e8+_0x1fac6f(0x1d5));_0x409601&&_0x3622fb[_0x1fac6f(0x25d)](_0x409601[_0x1fac6f(0x2c8)],_0x1a7202[_0x1fac6f(0x2df)])&&_0x2a4d78++;});let _0x452a16=Math[_0x271948(0x277)](_0x3622fb[_0x271948(0x1b9)](_0x3622fb[_0x271948(0x320)](_0x2a4d78,_0x13a02e),-0x3db*0x2+-0x590*-0x4+-0x1*0xe26));finalScoreString=_0x452a16[_0x271948(0x224)]();const _0x47b231=_0x3622fb[_0x271948(0x226)](0x20fe+0x619+0x1*-0x2573,timeLeft),_0x27494d=Math[_0x271948(0x271)](_0x3622fb[_0x271948(0x234)](_0x47b231,-0x2029*-0x1+-0x8db+0x2*-0xb89)),_0x177296=_0x3622fb[_0x271948(0x1b7)](_0x47b231,0x5*-0x1a2+0x1725+0x1*-0xebf);document[_0x271948(0x2ee)+_0x271948(0x280)](_0x3622fb[_0x271948(0x281)])[_0x271948(0x2b3)][_0x271948(0x2ad)]=_0x3622fb[_0x271948(0x2ae)],document[_0x271948(0x2ee)+_0x271948(0x280)](_0x3622fb[_0x271948(0x208)])[_0x271948(0x2b3)][_0x271948(0x2ad)]=_0x3622fb[_0x271948(0x211)],document[_0x271948(0x2ee)+_0x271948(0x280)](_0x3622fb[_0x271948(0x1ab)])[_0x271948(0x318)+'t']=finalScoreString;let _0x5cab83=_0x3a15a8?_0x3622fb[_0x271948(0x1c4)]:'';document[_0x271948(0x2ee)+_0x271948(0x280)](_0x3622fb[_0x271948(0x20f)])[_0x271948(0x30c)]=_0x271948(0x1f0)+_0x271948(0x287)+_0x5cab83+(_0x271948(0x1f0)+_0x271948(0x310)+_0x271948(0x28f)+_0x271948(0x2eb)+_0x271948(0x27c))+_0x2a4d78+_0x271948(0x322)+_0x13a02e+(_0x271948(0x221)+_0x271948(0x1f0)+_0x271948(0x310)+_0x271948(0x25c)+_0x271948(0x2d5)+_0x271948(0x1ad)+_0x271948(0x31e))+_0x27494d+_0x271948(0x218)+_0x177296+(_0x271948(0x2c5)+_0x271948(0x1d4)+_0x271948(0x2e3)+_0x271948(0x2cc)+_0x271948(0x30a)),window[_0x271948(0x278)](0x1*0x17e1+0x3ad*-0x7+0x4f*0x6,-0xb21*-0x2+-0x19d*0x8+-0x9*0x10a);}async function sendDataToSheet(){const _0x15a9f1=_0x5b2784,_0x3cc8b8={'CTjWr':_0x15a9f1(0x24c),'nsZGt':_0x15a9f1(0x22c),'BWyuA':_0x15a9f1(0x207)+'si','BljRH':_0x15a9f1(0x2bc)+_0x15a9f1(0x242),'LkLWx':_0x15a9f1(0x2e9)+_0x15a9f1(0x266),'aKsKQ':_0x15a9f1(0x1cf)+_0x15a9f1(0x2b1),'Mygng':_0x15a9f1(0x2dd)+_0x15a9f1(0x313),'nLuvQ':function(_0x3819d6,_0x4590cf){return _0x3819d6&&_0x4590cf;},'njWhZ':function(_0x40b21a,_0x48ee7b){return _0x40b21a(_0x48ee7b);},'GgltD':_0x15a9f1(0x2d2)+_0x15a9f1(0x27e)+_0x15a9f1(0x1bb)+_0x15a9f1(0x1d1)+_0x15a9f1(0x2aa)+'!','vEBeb':_0x15a9f1(0x1e6),'gWyAx':_0x15a9f1(0x21c),'WnbNl':_0x15a9f1(0x300),'YsaxD':_0x15a9f1(0x2d6),'bxsPQ':_0x15a9f1(0x2d9),'tyEWB':_0x15a9f1(0x1df)+_0x15a9f1(0x28b),'GkUNY':_0x15a9f1(0x2c0),'LjZjO':_0x15a9f1(0x1b1),'jaYek':function(_0x560946,_0x4ce51c,_0xa86a4d){return _0x560946(_0x4ce51c,_0xa86a4d);},'RuTjg':_0x15a9f1(0x241),'nivPO':_0x15a9f1(0x20b),'UjEWI':_0x15a9f1(0x2de)+_0x15a9f1(0x24f)+_0x15a9f1(0x282)+_0x15a9f1(0x1cd),'OgkiK':_0x15a9f1(0x297)+_0x15a9f1(0x22d)},_0x203d96=document[_0x15a9f1(0x2ee)+_0x15a9f1(0x280)](_0x3cc8b8[_0x15a9f1(0x1d8)])[_0x15a9f1(0x2c8)][_0x15a9f1(0x2b5)](),_0x8643df=document[_0x15a9f1(0x2ee)+_0x15a9f1(0x280)](_0x3cc8b8[_0x15a9f1(0x306)])[_0x15a9f1(0x2c8)][_0x15a9f1(0x2b5)](),_0x18ddb7=document[_0x15a9f1(0x2ee)+_0x15a9f1(0x280)](_0x3cc8b8[_0x15a9f1(0x2a8)])[_0x15a9f1(0x2c8)][_0x15a9f1(0x2b5)](),_0x4e7376=document[_0x15a9f1(0x2ee)+_0x15a9f1(0x280)](_0x3cc8b8[_0x15a9f1(0x1ff)])[_0x15a9f1(0x2c8)][_0x15a9f1(0x2b5)](),_0x482025=document[_0x15a9f1(0x2ee)+_0x15a9f1(0x280)](_0x3cc8b8[_0x15a9f1(0x255)]),_0x1b4c38=document[_0x15a9f1(0x2ee)+_0x15a9f1(0x280)](_0x3cc8b8[_0x15a9f1(0x2ed)]),_0x16f2ef=document[_0x15a9f1(0x2ee)+_0x15a9f1(0x280)](_0x3cc8b8[_0x15a9f1(0x1ac)]);if(!(_0x3cc8b8[_0x15a9f1(0x272)](_0x203d96,_0x8643df)&&_0x18ddb7&&_0x4e7376))return void _0x3cc8b8[_0x15a9f1(0x312)](alert,_0x3cc8b8[_0x15a9f1(0x1dc)]);_0x482025[_0x15a9f1(0x2b3)][_0x15a9f1(0x2ad)]=_0x3cc8b8[_0x15a9f1(0x2d4)],_0x1b4c38[_0x15a9f1(0x2b3)][_0x15a9f1(0x2ad)]=_0x3cc8b8[_0x15a9f1(0x2d4)],_0x16f2ef[_0x15a9f1(0x2b3)][_0x15a9f1(0x2ad)]=_0x3cc8b8[_0x15a9f1(0x25f)];const _0x9c8dae=new URLSearchParams();_0x9c8dae[_0x15a9f1(0x206)](_0x3cc8b8[_0x15a9f1(0x28c)],_0x203d96),_0x9c8dae[_0x15a9f1(0x206)]('hp',_0x8643df),_0x9c8dae[_0x15a9f1(0x206)](_0x3cc8b8[_0x15a9f1(0x202)],_0x18ddb7),_0x9c8dae[_0x15a9f1(0x206)](_0x3cc8b8[_0x15a9f1(0x27f)],_0x3cc8b8[_0x15a9f1(0x2e8)]),_0x9c8dae[_0x15a9f1(0x206)](_0x3cc8b8[_0x15a9f1(0x209)],_0x4e7376),_0x9c8dae[_0x15a9f1(0x206)](_0x3cc8b8[_0x15a9f1(0x2a1)],finalScoreString);try{await _0x3cc8b8[_0x15a9f1(0x1d2)](fetch,appsScriptUrl,{'method':_0x3cc8b8[_0x15a9f1(0x2c4)],'mode':_0x3cc8b8[_0x15a9f1(0x2c1)],'headers':{'Content-Type':_0x3cc8b8[_0x15a9f1(0x201)]},'body':_0x9c8dae}),_0x16f2ef[_0x15a9f1(0x2b3)][_0x15a9f1(0x2ad)]=_0x3cc8b8[_0x15a9f1(0x2d4)],_0x1b4c38[_0x15a9f1(0x2b3)][_0x15a9f1(0x2ad)]=_0x3cc8b8[_0x15a9f1(0x25f)],document[_0x15a9f1(0x2ee)+_0x15a9f1(0x280)](_0x3cc8b8[_0x15a9f1(0x2e1)])[_0x15a9f1(0x2b3)][_0x15a9f1(0x2ad)]=_0x3cc8b8[_0x15a9f1(0x2d4)];}catch(_0x7a4e49){console[_0x15a9f1(0x1d0)](_0x7a4e49),_0x16f2ef[_0x15a9f1(0x2b3)][_0x15a9f1(0x2ad)]=_0x3cc8b8[_0x15a9f1(0x2d4)],_0x482025[_0x15a9f1(0x2b3)][_0x15a9f1(0x2ad)]=_0x3cc8b8[_0x15a9f1(0x25f)];}}
+    </script>
+</body>
+
+</html>
