@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta
+        content="Tes Hitung Cepat Berbasis Web yang dikembangkan oleh Hebbie Ilma Adzim, S. ST didedikasikan untuk PT. Kepuh Kencana Arum"
+        name="description">
+    <link rel="shortcut icon" type="image/x-icon" href="favicon.ico">
+    <link crossorigin href="https://lh7-rt.googleusercontent.com" rel="preconnect">
+    <title>Tes Hitung Cepat</title>
+    <style>
+        :root {
+            --primary-color: #4a90e2;
+            --secondary-color: #f5a623;
+            --bg-color: #f4f7f6;
+            --text-color: #333;
+            --card-bg: #ffffff;
+            --danger-color: #ee5253;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: system-ui, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            padding: 1.25rem;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        img {
+            max-width: 100%;
+        }
+
+        .passkey-container {
+            background: var(--card-bg);
+            max-width: 25rem;
+            width: 100%;
+            border-radius: 0.75rem;
+            box-shadow: 0 0.25rem 0.9375rem rgba(0, 0, 0, 0.1);
+            padding: 2.1875rem 1.875rem;
+            text-align: center;
+        }
+
+        .passkey-input {
+            width: 100%;
+            padding: 0.75rem;
+            margin: 1.25rem 0 0.625rem 0;
+            border: 0.125rem solid #e9ecef;
+            border-radius: 0.5rem;
+            font-size: 1rem;
+            text-align: center;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .passkey-input:focus {
+            border-color: var(--primary-color);
+        }
+
+        .passkey-btn {
+            width: 100%;
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 0.75rem;
+            font-size: 1rem;
+            font-weight: bold;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .passkey-btn:hover {
+            background: #357abd;
+        }
+
+        .error-msg {
+            color: var(--danger-color);
+            font-size: 0.875rem;
+            margin-top: 0.75rem;
+            display: none;
+            font-weight: 500;
+        }
+
+        .loading-msg {
+            color: var(--primary-color);
+            font-size: 0.875rem;
+            margin-top: 0.75rem;
+            display: none;
+        }
+
+        .quiz-container {
+            background: var(--card-bg);
+            max-width: 43.75rem;
+            width: 100%;
+            border-radius: 0.75rem;
+            box-shadow: 0 0.25rem 0.9375rem rgba(0, 0, 0, 0.1);
+            padding: 1.875rem;
+            position: relative;
+            display: none;
+        }
+
+        /* PEMBARUAN: Header dibuat melayang (Sticky) saat di-scroll */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 0.125rem solid #eee;
+            padding-bottom: 0.9375rem;
+            margin-bottom: 1.25rem;
+
+            /* Logika Sticky */
+            position: sticky;
+            top: 0;
+            /* Menempel di batas paling atas browser */
+            background: var(--card-bg);
+            /* Menutupi soal di bawahnya saat berpapasan */
+            z-index: 100;
+            /* Memastikan posisi selalu di layer paling depan */
+            margin-top: -0.625rem;
+            /* Penyesuaian jarak kompensasi padding container */
+            padding-top: 0.625rem;
+        }
+
+        h1 {
+            font-size: 1.5rem;
+            color: var(--primary-color);
+        }
+
+        #timer {
+            font-size: 1.125rem;
+            font-weight: bold;
+            background: #ffdde1;
+            color: var(--danger-color);
+            padding: 0.5rem 0.9375rem;
+            border-radius: 1.25rem;
+            border: 0.0625rem solid #ffb8b8;
+            white-space: nowrap;
+            /* Mencegah teks timer terlipat di layar kecil */
+        }
+
+        #instruction {
+            padding: 0 0 2rem;
+            font-style: italic;
+            font-size: larger;
+        }
+
+        #quiz-form ol {
+            padding-inline-start: 1rem;
+        }
+
+        .question-card {
+            margin-bottom: 1.5625rem;
+            padding-bottom: 1.25rem;
+            border-bottom: 0.0625rem solid #eff2f5;
+            text-align: center;
+
+            &::marker {
+                font-weight: 600;
+            }
+        }
+
+        .question-text {
+            font-weight: 600;
+            margin-bottom: 1.25rem;
+            vertical-align: top;
+        }
+
+        .question-text>p {
+            margin: 0 0 0.5rem;
+        }
+
+        .options-container {
+            margin-top: 1rem;
+            text-align: left;
+        }
+
+        .answer-input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 0.125rem solid #e9ecef;
+            border-radius: 0.5rem;
+            font-size: 1rem;
+            outline: none;
+            transition: border-color 0.2s;
+            resize: vertical;
+            /* min-height: 80px; */
+        }
+
+        .answer-input:focus {
+            border-color: var(--primary-color);
+        }
+
+        input[type="radio"]:checked+span {
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+
+        .submit-btn {
+            display: block;
+            width: 100%;
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 0.9375rem;
+            font-size: 1.125rem;
+            font-weight: bold;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            transition: background 0.2s;
+            margin-top: 1.25rem;
+        }
+
+        .submit-btn:hover {
+            background: #357abd;
+        }
+
+        #result {
+            text-align: center;
+            padding: 1.875rem;
+        }
+
+        .result-score {
+            font-size: 3.5rem;
+            font-weight: bold;
+            color: var(--secondary-color);
+            margin: 0.9375rem 0;
+        }
+
+        .result-details {
+            font-size: 1rem;
+            margin-bottom: 1.5625rem;
+            line-height: 1.6;
+        }
+
+        .restart-btn {
+            background: #6c757d;
+            color: white;
+            padding: 0.75rem 1.875rem;
+            border: none;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: bold;
+            transition: background 0.2s;
+            width: 100%;
+            max-width: 250px;
+            margin: 10px auto;
+        }
+
+        .restart-btn:hover {
+            background: #5a6268;
+        }
+
+        .form-group {
+            margin-bottom: 0.9375rem;
+            text-align: left;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.3125rem;
+            font-weight: 600;
+            font-size: 0.875rem;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 0.625rem 0.75rem;
+            border: 0.125rem solid #e9ecef;
+            border-radius: 0.375rem;
+            font-size: 0.9375rem;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .form-control:focus {
+            border-color: var(--primary-color);
+        }
+
+        footer {
+            text-align: center;
+            line-height: calc(1em + 0.5rem);
+            padding: 1rem 0 0;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="passkey-container" id="passkey-box">
+        <h2>Verifikasi Akses</h2>
+        <p style="font-size: 0.875rem; color: #666; margin-top: 0.3125rem;">Silakan masukkan passkey untuk membuka tes
+        </p>
+        <input type="password" id="passkey-input" class="passkey-input" placeholder="Masukkan Passkey...">
+        <button class="passkey-btn" onclick="verifyPasskey()">Mulai Tes</button>
+        <div id="loading-msg" class="loading-msg">Memverifikasi passkey...</div>
+        <div id="error-msg" class="error-msg">Passkey salah! Silakan coba lagi.</div>
+    </div>
+
+    <div class="quiz-container" id="quiz-box">
+        <header>
+            <h1>Hitung Cepat</h1>
+            <div id="timer">10:00</div>
+        </header>
+
+        <section id="instruction">Hitung jawaban dari soal tanpa kalkulator atau alat bantu hitung lainnya.
+        </section>
+
+        <form id="quiz-form">
+            <div id="questions-container"></div>
+            <button type="button" class="submit-btn" onclick="submitQuiz(false)">Selesai</button>
+        </form>
+    </div>
+
+    <div class="quiz-container" id="result">
+        <h2>Skor</h2>
+        <div class="result-score" id="score-display">0</div>
+        <div class="result-details" id="details-display"></div>
+
+        <!-- <div style="margin-bottom: 1.5625rem;">
+            <button class="restart-btn" onclick="window.location.reload()">Ulangi Tes Langsung</button>
+        </div> -->
+
+        <div id="input-data-box" style="border-top: 0.125rem solid #eee; padding-top: 1.5625rem;">
+            <h3 style="margin-bottom: 0.9375rem; color: var(--primary-color); text-align: left;">Kirim Hasil Tes (Harap
+                Sesuai Instruksi Petugas)</h3>
+
+            <div class="form-group">
+                <label>Nama Lengkap</label>
+                <input type="text" id="input-nama" class="form-control" placeholder="Contoh: Joko Widodo">
+            </div>
+
+            <div class="form-group">
+                <label>No Whatsapp</label>
+                <input type="tel" id="input-hp" class="form-control" placeholder="Contoh: 62XXXXXXXXXXX">
+            </div>
+
+            <div class="form-group">
+                <label>Posisi yang Dilamar</label>
+                <input type="text" id="input-posisi" class="form-control" placeholder="Contoh: Direktur Operasional">
+            </div>
+
+            <div class="form-group">
+                <label>Nama Instruktur Ujian</label>
+                <input type="text" id="input-petugas" class="form-control" placeholder="Contoh: Ani Wijaya">
+            </div>
+
+            <button class="submit-btn" style="margin-top: 0.625rem;" onclick="sendDataToSheet()">Kirim Hasil
+                Tes</button>
+            <div id="send-loading-msg" class="loading-msg" style="text-align:center; margin-top:0.75rem;">Sedang
+                mengirim data...</div>
+            <div id="send-success-msg"
+                style="color: #2ecc71; text-align:center; margin-top:0.75rem; display:none; font-weight:bold;">Data
+                Berhasil Dikirim</div>
+            <div id="send-error-msg" class="error-msg" style="text-align:center; margin-top:0.75rem;">Gagal mengirim
+                data.
+                Periksa koneksi internet dan coba lagi.</div>
+        </div>
+    </div>
+
+    <footer>
+        <p>Dikembangkan oleh <a href="https://github.com/lovermans" rel="noopener" target="_blank">Lovermans</a>
+            didedikasikan untuk <a href="https://kepuhkencanaarum.com" rel="noopener" target="_blank">PT. Kepuh Kencana
+                Arum</a></p>
+    </footer>
+
+    <script>
+        const _0xc1ce7=_0x9b33;(function(_0x5c1645,_0xaef7c6){const _0x50db10=_0x9b33,_0x44ef9c=_0x5c1645();while(!![]){try{const _0xc064ca=parseInt(_0x50db10(0x1d4))/(0x10fe+-0x2069+0xf6c)+-parseInt(_0x50db10(0x23f))/(-0x10ae+0x3b9*0x4+0x1cc)*(-parseInt(_0x50db10(0x222))/(-0x223*-0x6+0x248a+0x1*-0x3159))+parseInt(_0x50db10(0x21c))/(-0x7*-0x4b5+-0x1550+-0xb9f)*(-parseInt(_0x50db10(0x25e))/(-0x16a5+-0xd3b+0x23e5))+-parseInt(_0x50db10(0x26f))/(0x1f7*0x5+-0x231e+0x1951)*(-parseInt(_0x50db10(0x273))/(0x5af+-0xf99+0x9f1))+-parseInt(_0x50db10(0x204))/(-0x83*-0x13+0x3*0x807+-0x21c6)+parseInt(_0x50db10(0x1c1))/(-0x20df+0x1815*-0x1+0x38fd)*(parseInt(_0x50db10(0x1f0))/(-0xc04*-0x1+-0x1490+0x7*0x13a))+parseInt(_0x50db10(0x201))/(0x419*-0x1+-0xd9+0x4fd)*(-parseInt(_0x50db10(0x25f))/(-0x7*0x55d+-0x1fa6*0x1+0x453d));if(_0xc064ca===_0xaef7c6)break;else _0x44ef9c['push'](_0x44ef9c['shift']());}catch(_0x13fd96){_0x44ef9c['push'](_0x44ef9c['shift']());}}}(_0x12d4,0x5b7b8+-0x858f5+-0x1*-0x987fd));const quizData=[{'question':_0xc1ce7(0x26c)+_0xc1ce7(0x1d6),'correct':'63'},{'question':_0xc1ce7(0x24c)+_0xc1ce7(0x228)+_0xc1ce7(0x236),'correct':'1'},{'question':_0xc1ce7(0x251)+_0xc1ce7(0x1c3)+_0xc1ce7(0x279),'correct':'22'},{'question':_0xc1ce7(0x206)+_0xc1ce7(0x1f3),'correct':'82'},{'question':_0xc1ce7(0x1d0)+_0xc1ce7(0x185),'correct':'6'},{'question':_0xc1ce7(0x20d)+_0xc1ce7(0x1a4),'correct':'0'},{'question':_0xc1ce7(0x23c)+'=','correct':'24'},{'question':_0xc1ce7(0x1a8)+_0xc1ce7(0x1c4)+_0xc1ce7(0x27d),'correct':'12'},{'question':_0xc1ce7(0x1d7)+_0xc1ce7(0x186),'correct':'39'},{'question':_0xc1ce7(0x253)+_0xc1ce7(0x1ad),'correct':'1'}];function _0x9b33(_0x15424c,_0x5f1764){_0x15424c=_0x15424c-(0x12cc+-0x314+-0xe35*0x1);const _0xf686ba=_0x12d4();let _0x2247dc=_0xf686ba[_0x15424c];return _0x2247dc;}let timerInterval,timeLeft=-0x287+0xbc9+0x5*-0x162,finalScoreString='';function _0x12d4(){const _0x5e618c=['scrollTo','Mwtaw','ent','fikasi.\x20Pe','lah!\x20Akses','<br><br>','der=\x22Jawab','cYBGw','176HevTfp','plcud','none','6305880kMtkxf','nama','6\x20x\x207\x20+\x2052','UwWIf','question','-msg','gas','dMNzp','block','120\x20:\x2012\x20+','an...\x22>\x0a\x20\x20','bw0ALeryms','\x20data\x20form','\x22\x20placehol','text','kosong!','u\x20Pengerja','untjd','score-disp','loading-ms','innerHTML','Passkey\x20ti','display','an_lli1WaJ','4TnHeIx','timer','com/spread','nf6yWkUbEd','\x20menit\x20','an:</stron','18jBYhsa','csv','GNAhE','efBsA','skor','posisi','5\x20+\x202)\x20:\x208','tSUNn','forEach','ai818MLUW7','CQcYO','bSkYF','cs.google.','div','floor','NqvMs','abis!\x20Kuis','yle=\x27color','et.','rm-urlenco','2\x20=','\x20\x20\x20\x20\x20','ss-msg','round','Mohon\x20leng','error-msg','2\x20x\x204\x20x\x203\x20','NTfOf','Gagal\x20veri','118926KzImsP','rong>Jawab','\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20','\x20\x20<strong>','IpzfQ','input-petu','kdEKW','XJuxx','trim','STnRa','mipdM','\x20\x20\x20\x20','no-cors','(15\x20x\x205\x20+\x20','passkey-bo','passkey-in','error','WYFJE','(60\x20+\x2015\x20+','question-t','7\x20x\x206\x20:\x203\x20','uWCEPX0/ex','quiz-box','MZIdm','lSrQP','rwQbG','KTYot','EFWET','os/s/AKfyc','g>\x20','splay','81170bJudsh','10884ApfEqP','length','q?tqx=out:','yCIeh','dak\x20boleh\x20','sheets/d/1','OPbpB','lay','ded','an\x20Benar:<','zeSFW','result','AMeNh','9\x20x\x205\x20+\x2025','WKrmV','n\x20otomatis','64254NSwOLD','Hitung\x20Cep','ard','HYZjl','14DyGmqF','6i0O75L6hw','ntainer','ubung','send-error','mtIxe','\x205\x20=','LhSFJ','-yMftohxCe','qazEh','3\x20=','<strong\x20st','%<br>\x0a\x20\x20\x20\x20','mJSrH','riksa\x20kone','fkkes','ulir\x20terle','koeDk','createElem','\x20<input\x20ty','9\x20-\x203\x20=','\x20-\x203\x20=','SKDGK',';\x27>Waktu\x20H','Ou2GIXA0Nw','bih\x20dahulu','\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20','style','.</strong>','DYxav','\x20\x20\x20\x20\x20\x20\x20<st','applicatio','WHzgp','random','answer','ksi\x20intern','input-data','\x20dihentika','uRYQz','ILGMY','YzXYN','fibQL','Gagal\x20terh','send-loadi','options-co','wer-input\x22',':var(--dan','send-succe','aiMbS','nama_tes','appendChil','\x2010\x20-\x2020\x20=','ehnQZ','oBiOk','questions-','(2\x20x\x2016\x20+\x20','QRpLKVth6j','put','hGNNl','n/x-www-fo','-\x2013\x20=','BcYDo','input-posi','QEsL8Ug4bl','UJa0LJu9_K','input-hp','POST','\x20id=\x22answe','wBDqB','Eotxt','puvpn','container','ger-color)','split','r>\x0a\x20\x20\x20\x20\x20\x20\x20','BhNbW','xnZkI','\x20ditolak.','RQSHT','WcOMR','9wfTrMy','gxDyT','\x2030\x20+\x205)\x20:','12\x20-\x208)\x20:\x20','append','QKyjY','ext','wejVq','FRvdu','NDs/gviz/t','miUoM','petugas','replace','class=\x22ans','ZudCM','99\x20x\x209\x20:\x209','getElement','Total\x20Wakt','correct','881146wSkEvv','ript.googl','\x20-\x207\x20=','37\x20+\x209\x20-\x204','className','kSreI','toString','question-c','Passkey\x20sa','https://sc','vyluK','FnMJu','ById','/strong>\x20','details-di','input-nama','textConten','Rqxfm','frdwK','value','\x20detik.\x0a\x20\x20','qOvSl','kapi\x20semua','pe=\x22text\x22\x20','-box','https://do','lUbIF','rZhnF','119270jHqilK','DERZp','VJnPe','\x20-\x2012\x20=','ng-msg','e.com/macr','\x20\x20\x20\x20\x20\x20\x20','\x20\x20\x20\x20<br><b','GmpJg'];_0x12d4=function(){return _0x5e618c;};return _0x12d4();}const sheetCsvUrl=_0xc1ce7(0x1ed)+_0xc1ce7(0x22e)+_0xc1ce7(0x21e)+_0xc1ce7(0x264)+_0xc1ce7(0x1a9)+_0xc1ce7(0x274)+_0xc1ce7(0x1b0)+_0xc1ce7(0x21b)+_0xc1ce7(0x1ca)+_0xc1ce7(0x261)+_0xc1ce7(0x223),appsScriptUrl=_0xc1ce7(0x1dd)+_0xc1ce7(0x1d5)+_0xc1ce7(0x1f5)+_0xc1ce7(0x25b)+_0xc1ce7(0x20f)+_0xc1ce7(0x22b)+_0xc1ce7(0x21f)+_0xc1ce7(0x27b)+_0xc1ce7(0x1b1)+_0xc1ce7(0x189)+_0xc1ce7(0x254)+'ec';async function verifyPasskey(){const _0xfcc018=_0xc1ce7,_0x182c6b={'MZIdm':_0xfcc018(0x24e)+_0xfcc018(0x1aa),'mJSrH':_0xfcc018(0x23b),'qazEh':_0xfcc018(0x217)+'g','hGNNl':_0xfcc018(0x219)+_0xfcc018(0x263)+_0xfcc018(0x213),'DYxav':_0xfcc018(0x20c),'untjd':_0xfcc018(0x203),'XJuxx':function(_0x4cc203,_0x54b542){return _0x4cc203(_0x54b542);},'kSreI':_0xfcc018(0x19b)+_0xfcc018(0x276),'ehnQZ':function(_0xf78cb1,_0x104fc0){return _0xf78cb1===_0x104fc0;},'YzXYN':function(_0x233e66){return _0x233e66();},'wejVq':_0xfcc018(0x1dc)+_0xfcc018(0x1fd)+_0xfcc018(0x1be),'LhSFJ':_0xfcc018(0x23e)+_0xfcc018(0x1fc)+_0xfcc018(0x281)+_0xfcc018(0x194)+_0xfcc018(0x234)},_0x758ddc=document[_0xfcc018(0x1d1)+_0xfcc018(0x1e0)](_0x182c6b[_0xfcc018(0x256)])[_0xfcc018(0x1e7)][_0xfcc018(0x247)](),_0x24d634=document[_0xfcc018(0x1d1)+_0xfcc018(0x1e0)](_0x182c6b[_0xfcc018(0x280)]),_0x109afb=document[_0xfcc018(0x1d1)+_0xfcc018(0x1e0)](_0x182c6b[_0xfcc018(0x27c)]);if(!_0x758ddc)return _0x24d634[_0xfcc018(0x1e4)+'t']=_0x182c6b[_0xfcc018(0x1ab)],void(_0x24d634[_0xfcc018(0x18c)][_0xfcc018(0x21a)]=_0x182c6b[_0xfcc018(0x18e)]);_0x24d634[_0xfcc018(0x18c)][_0xfcc018(0x21a)]=_0x182c6b[_0xfcc018(0x215)],_0x109afb[_0xfcc018(0x18c)][_0xfcc018(0x21a)]=_0x182c6b[_0xfcc018(0x18e)];try{const _0x1bd14b=await _0x182c6b[_0xfcc018(0x246)](fetch,sheetCsvUrl);if(!_0x1bd14b['ok'])throw new Error(_0x182c6b[_0xfcc018(0x1d9)]);const _0x176703=(await _0x1bd14b[_0xfcc018(0x212)]())[_0xfcc018(0x1ba)]('\x0a')[0x3bf*-0x1+0x2437+-0x1*0x2078][_0xfcc018(0x1ba)](',')[-0x1*0x1279+-0x7d3*0x4+-0x19b*-0x1f][_0xfcc018(0x1cd)](/^"|"$/g,'')[_0xfcc018(0x247)]();_0x109afb[_0xfcc018(0x18c)][_0xfcc018(0x21a)]=_0x182c6b[_0xfcc018(0x215)],_0x182c6b[_0xfcc018(0x1a5)](_0x758ddc,_0x176703)?_0x182c6b[_0xfcc018(0x199)](loadQuiz):(_0x24d634[_0xfcc018(0x1e4)+'t']=_0x182c6b[_0xfcc018(0x1c8)],_0x24d634[_0xfcc018(0x18c)][_0xfcc018(0x21a)]=_0x182c6b[_0xfcc018(0x18e)]);}catch(_0x54afac){_0x109afb[_0xfcc018(0x18c)][_0xfcc018(0x21a)]=_0x182c6b[_0xfcc018(0x215)],_0x24d634[_0xfcc018(0x218)]=_0x182c6b[_0xfcc018(0x27a)],_0x24d634[_0xfcc018(0x18c)][_0xfcc018(0x21a)]=_0x182c6b[_0xfcc018(0x18e)];}}function shuffleArray(_0x456238){const _0x49166b=_0xc1ce7,_0x5e11e6={'oBiOk':function(_0x2b562a,_0x47871e){return _0x2b562a-_0x47871e;},'WKrmV':function(_0x34789c,_0x2f43fb){return _0x34789c>_0x2f43fb;},'bSkYF':function(_0x520d21,_0x5a9b36){return _0x520d21*_0x5a9b36;},'HYZjl':function(_0xd99808,_0x87605d){return _0xd99808+_0x87605d;}};for(let _0x3bb475=_0x5e11e6[_0x49166b(0x1a6)](_0x456238[_0x49166b(0x260)],-0x149*-0x2+-0x1f45+0x1cb4);_0x5e11e6[_0x49166b(0x26d)](_0x3bb475,-0x19c1+0x1808+0x9*0x31);_0x3bb475--){const _0x116da3=Math[_0x49166b(0x230)](_0x5e11e6[_0x49166b(0x22d)](Math[_0x49166b(0x192)](),_0x5e11e6[_0x49166b(0x272)](_0x3bb475,-0x4*-0x431+0x16*-0x10c+0x645)));[_0x456238[_0x3bb475],_0x456238[_0x116da3]]=[_0x456238[_0x116da3],_0x456238[_0x3bb475]];}return _0x456238;}function loadQuiz(){const _0x5a480e=_0xc1ce7,_0x4f2d27={'lSrQP':_0x5a480e(0x1db)+_0x5a480e(0x271),'BhNbW':_0x5a480e(0x22f),'rZhnF':_0x5a480e(0x252)+_0x5a480e(0x1c7),'OPbpB':_0x5a480e(0x19d)+_0x5a480e(0x275),'FRvdu':_0x5a480e(0x24d)+'x','IpzfQ':_0x5a480e(0x203),'WHzgp':_0x5a480e(0x255),'QKyjY':_0x5a480e(0x20c),'fibQL':_0x5a480e(0x1a7)+_0x5a480e(0x1b8),'Eotxt':function(_0x5ee491){return _0x5ee491();}};document[_0x5a480e(0x1d1)+_0x5a480e(0x1e0)](_0x4f2d27[_0x5a480e(0x1c9)])[_0x5a480e(0x18c)][_0x5a480e(0x21a)]=_0x4f2d27[_0x5a480e(0x243)],document[_0x5a480e(0x1d1)+_0x5a480e(0x1e0)](_0x4f2d27[_0x5a480e(0x191)])[_0x5a480e(0x18c)][_0x5a480e(0x21a)]=_0x4f2d27[_0x5a480e(0x1c6)];const _0x36550d=document[_0x5a480e(0x1d1)+_0x5a480e(0x1e0)](_0x4f2d27[_0x5a480e(0x19a)]);_0x36550d[_0x5a480e(0x218)]='';const _0x3d5a4f=document[_0x5a480e(0x183)+_0x5a480e(0x1fb)]('ol');_0x36550d[_0x5a480e(0x1a3)+'d'](_0x3d5a4f),quizData[_0x5a480e(0x22a)]((_0x2ab146,_0x21e718)=>{const _0x41da4b=_0x5a480e,_0x4f38d5=document[_0x41da4b(0x183)+_0x41da4b(0x1fb)]('li');_0x4f38d5[_0x41da4b(0x1d8)]=_0x4f2d27[_0x41da4b(0x257)];const _0x348abe=document[_0x41da4b(0x183)+_0x41da4b(0x1fb)](_0x4f2d27[_0x41da4b(0x1bc)]);_0x348abe[_0x41da4b(0x1d8)]=_0x4f2d27[_0x41da4b(0x1ef)],_0x348abe[_0x41da4b(0x218)]=_0x2ab146[_0x41da4b(0x208)],_0x4f38d5[_0x41da4b(0x1a3)+'d'](_0x348abe);const _0x148490=document[_0x41da4b(0x183)+_0x41da4b(0x1fb)](_0x4f2d27[_0x41da4b(0x1bc)]);_0x148490[_0x41da4b(0x1d8)]=_0x4f2d27[_0x41da4b(0x265)],_0x148490[_0x41da4b(0x218)]=_0x41da4b(0x18b)+_0x41da4b(0x241)+_0x41da4b(0x184)+_0x41da4b(0x1eb)+_0x41da4b(0x1ce)+_0x41da4b(0x19e)+_0x41da4b(0x1b4)+'r'+_0x21e718+(_0x41da4b(0x211)+_0x41da4b(0x1ff)+_0x41da4b(0x20e)+_0x41da4b(0x241)+_0x41da4b(0x24a)),_0x4f38d5[_0x41da4b(0x1a3)+'d'](_0x148490),_0x3d5a4f[_0x41da4b(0x1a3)+'d'](_0x4f38d5);}),_0x4f2d27[_0x5a480e(0x1b6)](startTimer);}function startTimer(){const _0x2e458a=_0xc1ce7,_0x1a0977={'zeSFW':function(_0x1aac48,_0x2533fe){return _0x1aac48/_0x2533fe;},'AMeNh':function(_0xbf43b7,_0x4de34c){return _0xbf43b7%_0x4de34c;},'WcOMR':function(_0x4c60a3,_0x72a7b){return _0x4c60a3<_0x72a7b;},'plcud':function(_0x4bd457,_0x4ad8ac){return _0x4bd457+_0x4ad8ac;},'CQcYO':function(_0x28fc27,_0x12fc43){return _0x28fc27<_0x12fc43;},'SKDGK':function(_0x4fd999,_0x117a11){return _0x4fd999<=_0x117a11;},'yCIeh':function(_0x255cc2,_0x5cf91a){return _0x255cc2(_0x5cf91a);},'cYBGw':_0x2e458a(0x21d),'VJnPe':function(_0xe7127d,_0x2d04dc,_0xb7f861){return _0xe7127d(_0x2d04dc,_0xb7f861);}},_0x6e52a5=document[_0x2e458a(0x1d1)+_0x2e458a(0x1e0)](_0x1a0977[_0x2e458a(0x200)]);timerInterval=_0x1a0977[_0x2e458a(0x1f2)](setInterval,()=>{const _0x62b1a2=_0x2e458a;let _0x1c6505=Math[_0x62b1a2(0x230)](_0x1a0977[_0x62b1a2(0x269)](timeLeft,-0x1b*0x13d+-0x329*-0x1+0xa*0x30d)),_0x9d2087=_0x1a0977[_0x62b1a2(0x26b)](timeLeft,0x1a67+0x2*-0x3ea+0x139*-0xf);_0x1c6505=_0x1a0977[_0x62b1a2(0x1c0)](_0x1c6505,0x8b2+-0x3*0x2e0+-0x8)?_0x1a0977[_0x62b1a2(0x202)]('0',_0x1c6505):_0x1c6505,_0x9d2087=_0x1a0977[_0x62b1a2(0x22c)](_0x9d2087,0x1*-0x589+-0x40*0x12+0xa13*0x1)?_0x1a0977[_0x62b1a2(0x202)]('0',_0x9d2087):_0x9d2087,_0x6e52a5[_0x62b1a2(0x1e4)+'t']=_0x1c6505+':'+_0x9d2087,_0x1a0977[_0x62b1a2(0x187)](timeLeft,-0x25e+-0x1*-0x25f9+-0x239b*0x1)&&(_0x1a0977[_0x62b1a2(0x262)](clearInterval,timerInterval),_0x1a0977[_0x62b1a2(0x262)](submitQuiz,!(-0x9ae*-0x3+-0x1c75+-0x95))),timeLeft--;},0x1341+-0x3a*0xb+-0xcdb);}function submitQuiz(_0x38f1d8){const _0x59d587=_0xc1ce7,_0x4812c3={'xnZkI':function(_0x552522,_0x1c43c6){return _0x552522===_0x1c43c6;},'RQSHT':function(_0x26b99e,_0x517b7f){return _0x26b99e(_0x517b7f);},'koeDk':function(_0x4f0274,_0x4b6352){return _0x4f0274*_0x4b6352;},'ZudCM':function(_0x261d90,_0x6bcc1b){return _0x261d90/_0x6bcc1b;},'EFWET':function(_0xed26d3,_0x3446ec){return _0xed26d3-_0x3446ec;},'qOvSl':function(_0x10e531,_0x2a5d03){return _0x10e531%_0x2a5d03;},'vyluK':_0x59d587(0x255),'dMNzp':_0x59d587(0x203),'tSUNn':_0x59d587(0x26a),'mipdM':_0x59d587(0x20c),'FnMJu':_0x59d587(0x216)+_0x59d587(0x266),'mtIxe':_0x59d587(0x27e)+_0x59d587(0x233)+_0x59d587(0x19f)+_0x59d587(0x1b9)+_0x59d587(0x188)+_0x59d587(0x232)+_0x59d587(0x196)+_0x59d587(0x26e)+_0x59d587(0x18d)+_0x59d587(0x1fe),'aiMbS':_0x59d587(0x1e2)+_0x59d587(0x25d),'lUbIF':function(_0x502490,_0x256101){return _0x502490/_0x256101;}};_0x4812c3[_0x59d587(0x1bf)](clearInterval,timerInterval);let _0x4479b9=0x3a*0x16+0x1*0x18fd+-0x1*0x1df9;const _0x23be12=quizData[_0x59d587(0x260)];quizData[_0x59d587(0x22a)]((_0x5b1c6d,_0x2c0d47)=>{const _0x49f119=_0x59d587,_0x546023=document[_0x49f119(0x1d1)+_0x49f119(0x1e0)](_0x49f119(0x193)+_0x2c0d47)[_0x49f119(0x1e7)][_0x49f119(0x247)]();_0x546023&&_0x4812c3[_0x49f119(0x1bd)](_0x546023,_0x5b1c6d[_0x49f119(0x1d3)])&&_0x4479b9++;});let _0x5f4a73=Math[_0x59d587(0x239)](_0x4812c3[_0x59d587(0x284)](_0x4812c3[_0x59d587(0x1cf)](_0x4479b9,_0x23be12),-0x56f*0x1+-0x26be+0x2c91));finalScoreString=_0x5f4a73[_0x59d587(0x1da)]();const _0x2cfcc0=_0x4812c3[_0x59d587(0x25a)](-0x1*-0x21e2+0x5be*0x3+-0x30c4,timeLeft),_0x20ff75=Math[_0x59d587(0x230)](_0x4812c3[_0x59d587(0x1cf)](_0x2cfcc0,0xac6+0x2*-0x30+-0xa2a)),_0x58ded5=_0x4812c3[_0x59d587(0x1e9)](_0x2cfcc0,0x2*0x2c8+-0x43*-0x15+0x1*-0xad3);document[_0x59d587(0x1d1)+_0x59d587(0x1e0)](_0x4812c3[_0x59d587(0x1de)])[_0x59d587(0x18c)][_0x59d587(0x21a)]=_0x4812c3[_0x59d587(0x20b)],document[_0x59d587(0x1d1)+_0x59d587(0x1e0)](_0x4812c3[_0x59d587(0x229)])[_0x59d587(0x18c)][_0x59d587(0x21a)]=_0x4812c3[_0x59d587(0x249)],document[_0x59d587(0x1d1)+_0x59d587(0x1e0)](_0x4812c3[_0x59d587(0x1df)])[_0x59d587(0x1e4)+'t']=finalScoreString;let _0x2b18ff=_0x38f1d8?_0x4812c3[_0x59d587(0x278)]:'';document[_0x59d587(0x1d1)+_0x59d587(0x1e0)](_0x4812c3[_0x59d587(0x1a1)])[_0x59d587(0x218)]=_0x59d587(0x18b)+_0x59d587(0x1f6)+_0x2b18ff+(_0x59d587(0x18b)+_0x59d587(0x18f)+_0x59d587(0x240)+_0x59d587(0x268)+_0x59d587(0x1e1))+Math[_0x59d587(0x239)](_0x4812c3[_0x59d587(0x284)](_0x4812c3[_0x59d587(0x1ee)](_0x4479b9,_0x23be12),0x269a+0x1bdf+-0x1607*0x3))+(_0x59d587(0x27f)+_0x59d587(0x241)+_0x59d587(0x242)+_0x59d587(0x1d2)+_0x59d587(0x214)+_0x59d587(0x221)+_0x59d587(0x25c))+_0x20ff75+_0x59d587(0x220)+_0x58ded5+(_0x59d587(0x1e8)+_0x59d587(0x241)+_0x59d587(0x1f7)+_0x59d587(0x1bb)+_0x59d587(0x237)),window[_0x59d587(0x1f9)](-0x133f+-0x19a*0x14+-0x1*-0x3347,-0x640*-0x4+0x2e4+-0x1be4);}async function sendDataToSheet(){const _0x352f66=_0xc1ce7,_0x4f39c3={'GmpJg':_0x352f66(0x1e3),'ILGMY':_0x352f66(0x1b2),'Mwtaw':_0x352f66(0x1af)+'si','frdwK':_0x352f66(0x244)+_0x352f66(0x20a),'NqvMs':_0x352f66(0x277)+_0x352f66(0x209),'BcYDo':_0x352f66(0x1a0)+_0x352f66(0x238),'uRYQz':_0x352f66(0x19c)+_0x352f66(0x1f4),'NTfOf':function(_0x1da925,_0x48e793){return _0x1da925&&_0x48e793;},'puvpn':function(_0xa3ab8a,_0x15ba7){return _0xa3ab8a(_0x15ba7);},'gxDyT':_0x352f66(0x23a)+_0x352f66(0x1ea)+_0x352f66(0x210)+_0x352f66(0x283)+_0x352f66(0x18a)+'!','WYFJE':_0x352f66(0x203),'UwWIf':_0x352f66(0x20c),'STnRa':_0x352f66(0x205),'KTYot':_0x352f66(0x227),'DERZp':_0x352f66(0x1a2),'miUoM':_0x352f66(0x270)+'at','GNAhE':_0x352f66(0x1cc),'wBDqB':_0x352f66(0x226),'fkkes':function(_0x164332,_0x3035ae,_0x4af83d){return _0x164332(_0x3035ae,_0x4af83d);},'Rqxfm':_0x352f66(0x1b3),'rwQbG':_0x352f66(0x24b),'kdEKW':_0x352f66(0x190)+_0x352f66(0x1ac)+_0x352f66(0x235)+_0x352f66(0x267),'efBsA':_0x352f66(0x195)+_0x352f66(0x1ec)},_0x3ec911=document[_0x352f66(0x1d1)+_0x352f66(0x1e0)](_0x4f39c3[_0x352f66(0x1f8)])[_0x352f66(0x1e7)][_0x352f66(0x247)](),_0x57e1c0=document[_0x352f66(0x1d1)+_0x352f66(0x1e0)](_0x4f39c3[_0x352f66(0x198)])[_0x352f66(0x1e7)][_0x352f66(0x247)](),_0x40e4a1=document[_0x352f66(0x1d1)+_0x352f66(0x1e0)](_0x4f39c3[_0x352f66(0x1fa)])[_0x352f66(0x1e7)][_0x352f66(0x247)](),_0x2ee24b=document[_0x352f66(0x1d1)+_0x352f66(0x1e0)](_0x4f39c3[_0x352f66(0x1e6)])[_0x352f66(0x1e7)][_0x352f66(0x247)](),_0x38e178=document[_0x352f66(0x1d1)+_0x352f66(0x1e0)](_0x4f39c3[_0x352f66(0x231)]),_0x45a100=document[_0x352f66(0x1d1)+_0x352f66(0x1e0)](_0x4f39c3[_0x352f66(0x1ae)]),_0x148ce3=document[_0x352f66(0x1d1)+_0x352f66(0x1e0)](_0x4f39c3[_0x352f66(0x197)]);if(!(_0x4f39c3[_0x352f66(0x23d)](_0x3ec911,_0x57e1c0)&&_0x40e4a1&&_0x2ee24b))return void _0x4f39c3[_0x352f66(0x1b7)](alert,_0x4f39c3[_0x352f66(0x1c2)]);_0x38e178[_0x352f66(0x18c)][_0x352f66(0x21a)]=_0x4f39c3[_0x352f66(0x250)],_0x45a100[_0x352f66(0x18c)][_0x352f66(0x21a)]=_0x4f39c3[_0x352f66(0x250)],_0x148ce3[_0x352f66(0x18c)][_0x352f66(0x21a)]=_0x4f39c3[_0x352f66(0x207)];const _0x4f3283=new URLSearchParams();_0x4f3283[_0x352f66(0x1c5)](_0x4f39c3[_0x352f66(0x248)],_0x3ec911),_0x4f3283[_0x352f66(0x1c5)]('hp',_0x57e1c0),_0x4f3283[_0x352f66(0x1c5)](_0x4f39c3[_0x352f66(0x259)],_0x40e4a1),_0x4f3283[_0x352f66(0x1c5)](_0x4f39c3[_0x352f66(0x1f1)],_0x4f39c3[_0x352f66(0x1cb)]),_0x4f3283[_0x352f66(0x1c5)](_0x4f39c3[_0x352f66(0x224)],_0x2ee24b),_0x4f3283[_0x352f66(0x1c5)](_0x4f39c3[_0x352f66(0x1b5)],finalScoreString);try{await _0x4f39c3[_0x352f66(0x282)](fetch,appsScriptUrl,{'method':_0x4f39c3[_0x352f66(0x1e5)],'mode':_0x4f39c3[_0x352f66(0x258)],'headers':{'Content-Type':_0x4f39c3[_0x352f66(0x245)]},'body':_0x4f3283}),_0x148ce3[_0x352f66(0x18c)][_0x352f66(0x21a)]=_0x4f39c3[_0x352f66(0x250)],_0x45a100[_0x352f66(0x18c)][_0x352f66(0x21a)]=_0x4f39c3[_0x352f66(0x207)],document[_0x352f66(0x1d1)+_0x352f66(0x1e0)](_0x4f39c3[_0x352f66(0x225)])[_0x352f66(0x18c)][_0x352f66(0x21a)]=_0x4f39c3[_0x352f66(0x250)];}catch(_0x1f19eb){console[_0x352f66(0x24f)](_0x1f19eb),_0x148ce3[_0x352f66(0x18c)][_0x352f66(0x21a)]=_0x4f39c3[_0x352f66(0x250)],_0x38e178[_0x352f66(0x18c)][_0x352f66(0x21a)]=_0x4f39c3[_0x352f66(0x207)];}}
+    </script>
+</body>
+
+</html>
