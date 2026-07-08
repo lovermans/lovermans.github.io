@@ -281,7 +281,7 @@ formAbsen.addEventListener("submit", async function (event) {
         }
     } catch (error) {
         console.error(error);
-        alert("Terjadi kesalahan: " + error.message);
+        statusProses.innerHTML = error.message ? `<p>Terjadi kesalahan: ${error.message}</p>` : '<p>Terjadi kesalahan: Tidak dapat mengirim data.</p>';
     } finally {
         formAbsen.reset();
         opsiLaporan.slim.set('');
