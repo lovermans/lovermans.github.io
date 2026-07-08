@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html dir="ltr" lang="id">
+
+<head>
+    <meta content="width=device-width, initial-scale=1" name="viewport" />
+    <meta charset="UTF-8" />
+    <title>Absensi Virtual</title>
+    <link href="https://1.bp.blogspot.com/" rel="preconnect" />
+    <meta content="Formulir Absensi Virtual PT. Kepuh Kencana Arum" name="description" />
+    <link rel="stylesheet" href="./style-min-20260708.css" />
+    <style id="nojs"></style>
+</head>
+
+<body data-light="" id="main-bd"><a class="skip-navigation" href="#main" tabindex="0">Langsung Ke Konten Utama</a><input
+        id="theme-cb" type="checkbox" />
+    <main id="main" role="main" tabindex="-1">
+        <div class="main-content">
+            <div class="section" id="main-body" name="Badan Halaman">
+                <div class="widget Blog" data-version="2" id="Blog1">
+                    <div id="akses">
+                        <p>Email belum terdaftar atau lupa token? Pilih <a href="https://wa.me/6282234280128" rel="noopener"
+                                target="_top">daftar</a> atau <a href="https://wa.me/6282234280128">minta token</a> untuk
+                            menghubungi Whatsapp Personalia.</p>
+                        <div class="sub-konten">Kirim Laporan Absensi</div>
+                        <p>Isikan data yang diperlukan di bawah ini untuk laporan absensi virtual.</p>
+                        <form id="absenvirtual">
+                            <input type="hidden" id="hasilblob1" name="hasilblob1">
+                            <input type="hidden" id="namablob1" name="namablob1">
+                            <input type="hidden" id="mimeblob1" name="mimeblob1">
+                            <input type="hidden" id="extblob1" name="extblob1">
+                            <input type="hidden" id="hasilblob2" name="hasilblob2">
+                            <input type="hidden" id="namablob2" name="namablob2">
+                            <input type="hidden" id="mimeblob2" name="mimeblob2">
+                            <input type="hidden" id="extblob2" name="extblob2">
+                            <p class="kolom"><label for="mail">Email</label><input id="mail" type="email" name="mail"
+                                    placeholder="abc.def@ghi.com" required><span>Isikan email yang telah didaftarkan
+                                </span></p>
+                            <p class="kolom"><label for="laporan">Jenis Laporan</label>
+                                <select class="pilih" id="laporan" name="laporan" required>
+                                    <option value=""></option>
+                                    <option value="Kerja Dari Rumah">Kerja Dari Rumah</option>
+                                    <option value="Dinas Luar Kantor">Dinas Luar Kantor</option>
+                                    <option value="Dinas Di Kantor">Dinas Di Kantor</option>
+                                    <option value="Ijin Tidak Bekerja">Ijin Tidak Bekerja</option>
+                                    <option value="Ijin Pribadi Di Sela Bekerja">Ijin Pribadi Di Sela Bekerja</option>
+                                    <option value="Isolasi Mandiri">Isolasi Mandiri</option>
+                                </select><span>Pilih laporan absensi </span>
+                            </p>
+                            <p class="kolom"><label for="status">Status</label>
+                                <select class="pilihan" id="status" name="status">
+                                    <option value=""></option>
+                                </select><span>Pilih status </span>
+                            </p>
+                                <p class="kolom"><label for="suhu">Suhu Tubuh <i>(khusus untuk laporan isolasi
+                                    mandiri)</i></label>
+                                <select class="pilih" id="suhu" name="suhu">
+                                    <option value=""></option>
+                                </select><span>Isikan kondisi suhu tubuh </span>
+                            </p>
+                                <p class="kolom"><label for="nafas">Pernafasan <i>(khusus untuk laporan isolasi
+                                    mandiri)</i></label>
+                                <select class="pilih" id="nafas" name="nafas">
+                                    <option value=""></option>
+                                </select><span>Isikan kondisi pernafasan </span>
+                            </p>
+                            <p class="kolom"><label for="keterangan">Keterangan</label><input id="keterangan"
+                                    type="text" name="keterangan" placeholder="Keterangan Absensi Lainnya"><span>Isikan
+                                    keterangan absensi yang diperlukan </span></p>
+                            <p class="kolom"><label for="fotoselfie">Foto Selfi dan Sekitar</label><input
+                                    id="fotoselfie" type="file" name="fotoselfie" accept="image/*" capture required><span>Unggah foto selfi dengan pemandangan sekitar
+                                </span></p>
+                                <p class="kolom"><label for="fotodokumen">Foto Dokumen/Pendukung</label><input
+                                    id="fotodokumen" type="file" name="fotodokumen" accept="image/*" capture><span>Unggah foto dokumen/pendukung lainnya </span></p>
+                            <p class="kolom"><label for="lokasi">Lokasi GPS</label><input id="lokasi" type="text"
+                                    name="lokasi" placeholder="Koordinat Lokasi GPS" required readonly><span>Jika tidak
+                                    muncul koordinat lokasi GPS, maka dimohon untuk menyalakan GPS perangkat dan ijinkan
+                                    pengambilan lokasi di menu pengaturan situs pada browser lalu muat ulang halaman ini
+                                </span></p>
+                            <p class="kolom"><label for="token">Token</label><input id="token" type="text" name="token"
+                                    placeholder="XXXXXXXX" required><span>Selesaikan laporan dengan mengisi 8 digit kode
+                                    token yang diemailkan saat pendaftaran </span></p>
+                            <button id="kirim" type="submit">Kirim</button>
+                        </form>
+                        <div id="proses"></div>
+                        <p class="note">V 2.2 - Stabil</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+    <nav class="navbar" role="navigation">
+        <div class="navbar-wrapper"><label for="theme-cb" id="theme-cb-label" onclick="" title="Ubah Tema"><svg
+                    viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'>
+                    <path
+                        d="M20 8.69V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12 20 8.69zM12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6c3.31 0 6 2.69 6 6s-2.69 6-6 6z">
+                    </path>
+                </svg></label><input id='search-cb' type='checkbox' /><label for='search-cb' id='search-cb-label'
+                onclick=""><svg class="on" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path
+                        d="M15.5 14h-.79l-.28-.27A6.47 6.47 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z">
+                    </path>
+                </svg><svg class="off" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path
+                        d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z">
+                    </path>
+                </svg></label><label for='search-cb' id='search-canvas' onclick=''></label><input id='menu-cb'
+                type="checkbox" /><label for="menu-cb" id="menu-cb-label" onclick=""><svg class="on" viewBox="0 0 24 24"
+                    xmlns="http://www.w3.org/2000/svg">
+                    <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"></path>
+                </svg><svg class="off" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"></path>
+                </svg></label><label for='menu-cb' id='menu-canvas' onclick=''></label><input id='opt-cb'
+                type="checkbox" /><label for="opt-cb" id="opt-cb-label" onclick=""><svg viewBox="0 0 24 24"
+                    xmlns="http://www.w3.org/2000/svg">
+                    <path
+                        d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92 1.61 0 2.92-1.31 2.92-2.92s-1.31-2.92-2.92-2.92z">
+                    </path>
+                </svg></label><label for='opt-cb' id='opt-canvas' onclick=''></label>
+            <div class='title-bar'><span><img alt='HRGA PUSAT - PT. Kepuh Kencana Arum Icon' height='38' loading='lazy'
+                        src='https://1.bp.blogspot.com/-lfJtKy0P2s0/YPTfHvhwkII/AAAAAAAAC2U/WTOCvnzeduccAkZsz25eUrC1rIN9FeZCgCLcBGAsYHQ/w38-h38-p-k-no-nu/Icon.png'
+                        width='38' /></span></div>
+            <div class="nav-title-bar">
+                <div class='top-header'></div>
+                <div class='section' id='page-head'>
+                    <div class="widget Header" data-version="2" id="Header1">
+                        <div itemscope="" itemtype="https://schema.org/Organization"><img
+                                alt="HRGA PUSAT - PT. Kepuh Kencana Arum Logo" itemprop="logo" loading="lazy"
+                                src="https://1.bp.blogspot.com/-lfJtKy0P2s0/YPTfHvhwkII/AAAAAAAAC2U/WTOCvnzeduccAkZsz25eUrC1rIN9FeZCgCLcBGAsYHQ/w192-h192-p-k-no-nu/Icon.png">
+                                <h1 class="title"><a href="https://kka-hrga.blogspot.com/" itemprop="url" rel="noopener"
+                                    target="_top">HRGA PUSAT - PT. Kepuh Kencana Arum</a></h1>
+                            <p class="description">Aktivitas HRGA PT. Kepuh Kencana Arum</p>
+                        </div>
+                    </div>
+                    <div class='widget PageList' data-version='2' id='PageList1'>
+                        <h3>Menu</h3><a href='https://kka-hrga.blogspot.com/' rel='noopener' target="_top"><svg
+                                viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path
+                                    d="M3.9 12c0-1.71 1.39-3.1 3.1-3.1h4V7H7c-2.76 0-5 2.24-5 5s2.24 5 5 5h4v-1.9H7c-1.71 0-3.1-1.39-3.1-3.1zM8 13h8v-2H8v2zm9-6h-4v1.9h4c1.71 0 3.1 1.39 3.1 3.1s-1.39 3.1-3.1 3.1h-4V17h4c2.76 0 5-2.24 5-5s-2.24-5-5-5z">
+                                </path>
+                            </svg>Berita</a><a class="selected"
+                            href="#">
+                            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path
+                                    d="M3.9 12c0-1.71 1.39-3.1 3.1-3.1h4V7H7c-2.76 0-5 2.24-5 5s2.24 5 5 5h4v-1.9H7c-1.71 0-3.1-1.39-3.1-3.1zM8 13h8v-2H8v2zm9-6h-4v1.9h4c1.71 0 3.1 1.39 3.1 3.1s-1.39 3.1-3.1 3.1h-4V17h4c2.76 0 5-2.24 5-5s-2.24-5-5-5z">
+                                </path>
+                            </svg>Absensi Virtual</a>
+                        <div class="widget contact">
+                            <h3>Hubungi</h3>
+                            <address><a href="tel:+6282234280128" rel="noopener" target="_top"><svg viewBox="0 0 24 24"
+                                        xmlns="http://www.w3.org/2000/svg">
+                                        <path
+                                            d="M17 1.01L7 1c-1.1 0-2 .9-2 2v18c0 1.1.9 2 2 2h10c1.1 0 2-.9 2-2V3c0-1.1-.9-1.99-2-1.99zM17 19H7V5h10v14z">
+                                        </path>
+                                    </svg>Telepon</a><a href='mailto:kka.hrga.adm@gmail.com' rel='noopener'
+                                    target="_top"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                        <path
+                                            d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z">
+                                        </path>
+                                    </svg></svg>E-mail</a><a href='//wa.me/6282234280128' rel='noopener'
+                                    target="_top"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                        <path
+                                            d="M12.036 5.339c-3.635 0-6.591 2.956-6.593 6.589-.001 1.483.434 2.594 1.164 3.756l-.666 2.432 2.494-.654c1.117.663 2.184 1.061 3.595 1.061 3.632 0 6.591-2.956 6.592-6.59.003-3.641-2.942-6.593-6.586-6.594zm3.876 9.423c-.165.463-.957.885-1.337.942-.341.051-.773.072-1.248-.078-.288-.091-.657-.213-1.129-.417-1.987-.858-3.285-2.859-3.384-2.991-.099-.132-.809-1.074-.809-2.049 0-.975.512-1.454.693-1.653.182-.2.396-.25.528-.25l.38.007c.122.006.285-.046.446.34.165.397.561 1.372.611 1.471.049.099.083.215.016.347-.066.132-.099.215-.198.33l-.297.347c-.099.099-.202.206-.087.404.116.198.513.847 1.102 1.372.757.675 1.395.884 1.593.983.198.099.314.083.429-.05.116-.132.495-.578.627-.777s.264-.165.446-.099 1.156.545 1.354.645c.198.099.33.149.38.231.049.085.049.482-.116.945zm3.088-14.762h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-6.967 19.862c-1.327 0-2.634-.333-3.792-.965l-4.203 1.103 1.125-4.108c-.694-1.202-1.059-2.566-1.058-3.964.002-4.372 3.558-7.928 7.928-7.928 2.121.001 4.112.827 5.609 2.325s2.321 3.491 2.32 5.609c-.002 4.372-3.559 7.928-7.929 7.928z">
+                                        </path>
+                                    </svg>Whatsapp</a><a href="https://telegram.me/kkahrgaadm" rel="noopener"
+                                    target="_blank"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                        <path
+                                            d="M19,24l-14,0c-2.761,0 -5,-2.239 -5,-5l0,-14c0,-2.761 2.239,-5 5,-5l14,0c2.762,0 5,2.239 5,5l0,14c0,2.761 -2.238,5 -5,5Zm-2.744,-5.148c0.215,0.153 0.491,0.191 0.738,0.097c0.246,-0.093 0.428,-0.304 0.483,-0.56c0.579,-2.722 1.985,-9.614 2.512,-12.09c0.039,-0.187 -0.027,-0.381 -0.173,-0.506c-0.147,-0.124 -0.351,-0.16 -0.532,-0.093c-2.795,1.034 -11.404,4.264 -14.923,5.567c-0.223,0.082 -0.368,0.297 -0.361,0.533c0.008,0.235 0.167,0.44 0.395,0.509c1.578,0.471 3.65,1.128 3.65,1.128c0,0 0.967,2.924 1.472,4.41c0.063,0.187 0.21,0.334 0.402,0.384c0.193,0.05 0.397,-0.002 0.541,-0.138c0.811,-0.765 2.064,-1.948 2.064,-1.948c0,0 2.381,1.746 3.732,2.707Zm-7.34,-5.784l1.119,3.692l0.249,-2.338c0,0 4.324,-3.9 6.79,-6.124c0.072,-0.065 0.082,-0.174 0.022,-0.251c-0.06,-0.077 -0.169,-0.095 -0.251,-0.043c-2.857,1.825 -7.929,5.064 -7.929,5.064Z">
+                                        </path>
+                                    </svg>Telegram</a></address>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <form action="https://kka-hrga.blogspot.com/search" id="cse-search-box" target="_top"><input
+                    id="search-input" name="q" placeholder="Ketik kata kunci lalu tekan Enter" type="text" /></form>
+            <div class="opt-list"><a
+                    href="https://api.whatsapp.com/send?text=Sarana Absensi Virtual https://script.google.com/macros/s/AKfycbxL8e55-yLBw-iLtaJW1jIrCGJBenx7iJmAGWnlqMB2yaE6Gy-OfSbyK015gzdh4nvh/exec"
+                    rel="noopener" target="_top"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path
+                            d="M12.036 5.339c-3.635 0-6.591 2.956-6.593 6.589-.001 1.483.434 2.594 1.164 3.756l-.666 2.432 2.494-.654c1.117.663 2.184 1.061 3.595 1.061 3.632 0 6.591-2.956 6.592-6.59.003-3.641-2.942-6.593-6.586-6.594zm3.876 9.423c-.165.463-.957.885-1.337.942-.341.051-.773.072-1.248-.078-.288-.091-.657-.213-1.129-.417-1.987-.858-3.285-2.859-3.384-2.991-.099-.132-.809-1.074-.809-2.049 0-.975.512-1.454.693-1.653.182-.2.396-.25.528-.25l.38.007c.122.006.285-.046.446.34.165.397.561 1.372.611 1.471.049.099.083.215.016.347-.066.132-.099.215-.198.33l-.297.347c-.099.099-.202.206-.087.404.116.198.513.847 1.102 1.372.757.675 1.395.884 1.593.983.198.099.314.083.429-.05.116-.132.495-.578.627-.777s.264-.165.446-.099 1.156.545 1.354.645c.198.099.33.149.38.231.049.085.049.482-.116.945zm3.088-14.762h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-6.967 19.862c-1.327 0-2.634-.333-3.792-.965l-4.203 1.103 1.125-4.108c-.694-1.202-1.059-2.566-1.058-3.964.002-4.372 3.558-7.928 7.928-7.928 2.121.001 4.112.827 5.609 2.325s2.321 3.491 2.32 5.609c-.002 4.372-3.559 7.928-7.929 7.928z">
+                        </path>
+                    </svg>Whatsapp</a><a
+                    href="https://t.me/share/url?url=https://script.google.com/macros/s/AKfycbxL8e55-yLBw-iLtaJW1jIrCGJBenx7iJmAGWnlqMB2yaE6Gy-OfSbyK015gzdh4nvh/exec&amp;text=Absensi Virtual"
+                    rel="noopener" target="_blank"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path
+                            d="M19,24l-14,0c-2.761,0 -5,-2.239 -5,-5l0,-14c0,-2.761 2.239,-5 5,-5l14,0c2.762,0 5,2.239 5,5l0,14c0,2.761 -2.238,5 -5,5Zm-2.744,-5.148c0.215,0.153 0.491,0.191 0.738,0.097c0.246,-0.093 0.428,-0.304 0.483,-0.56c0.579,-2.722 1.985,-9.614 2.512,-12.09c0.039,-0.187 -0.027,-0.381 -0.173,-0.506c-0.147,-0.124 -0.351,-0.16 -0.532,-0.093c-2.795,1.034 -11.404,4.264 -14.923,5.567c-0.223,0.082 -0.368,0.297 -0.361,0.533c0.008,0.235 0.167,0.44 0.395,0.509c1.578,0.471 3.65,1.128 3.65,1.128c0,0 0.967,2.924 1.472,4.41c0.063,0.187 0.21,0.334 0.402,0.384c0.193,0.05 0.397,-0.002 0.541,-0.138c0.811,-0.765 2.064,-1.948 2.064,-1.948c0,0 2.381,1.746 3.732,2.707Zm-7.34,-5.784l1.119,3.692l0.249,-2.338c0,0 4.324,-3.9 6.79,-6.124c0.072,-0.065 0.082,-0.174 0.022,-0.251c-0.06,-0.077 -0.169,-0.095 -0.251,-0.043c-2.857,1.825 -7.929,5.064 -7.929,5.064Z">
+                        </path>
+                    </svg>Telegram</a></div>
+        </div>
+    </nav>
+    <div class='kencana'></div>
+    <div class='iso'></div>
+    <div id="psn-puncak"></div>
+    <script src="./slimselect-min.js"></script>
+    <script src="./app-min-20260708.js"></script>
+</body>
+
+</html>
