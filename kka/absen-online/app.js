@@ -272,10 +272,6 @@ formAbsen.addEventListener("submit", async function (event) {
             body: urlParameters
         });
 
-        if (!response.ok) {
-            throw new Error("Respons jaringan tidak stabil atau terjadi server error.");
-        }
-
         var responseText = await response.text();
 
         if (responseText) {
